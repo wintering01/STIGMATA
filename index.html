@@ -383,6 +383,7 @@ details.fold.sec{padding:0}
 .radar .rot{animation:sweep 140s linear infinite;transform-origin:0 0}
 .radar .rot.rev{animation-direction:reverse;animation-duration:200s}
 .radar .zring{cursor:pointer;transition:opacity .4s}
+.radar.idle *{animation-play-state:paused!important}
 .radar .zring:hover .rline{stroke-opacity:1}
 .radar .core-star{transform-origin:0 0;animation:mspin 30s linear infinite}
 @keyframes mspin{to{transform:rotate(360deg)}}
@@ -399,19 +400,22 @@ details.fold.sec{padding:0}
 .radar .dot:hover text{fill:#fff}
 .radar text{font-family:var(--mono);fill:#85849a;font-size:10px;letter-spacing:.2em}
 .radar .cls{font-family:var(--term);font-size:8.5px;letter-spacing:.3em;opacity:.8}
+@font-face{font-family:"Galmuri11";src:url("https://cdn.jsdelivr.net/npm/galmuri@2.40.3/dist/Galmuri11.woff2") format("woff2");font-display:swap}
 .callouts{position:absolute;inset:0;pointer-events:none}
-.cbox{position:absolute;pointer-events:auto;transform:translate(0,-50%);font-family:var(--serif);font-size:14px;font-weight:500;letter-spacing:.06em;line-height:1.4;color:var(--zc);background:rgba(6,6,12,.82);border:1px solid color-mix(in srgb,var(--zc) 45%,transparent);padding:6px 10px 6px 12px;white-space:nowrap;cursor:pointer;transition:border-color .3s,background .3s,opacity .45s}
+.cbox{position:absolute;pointer-events:auto;transform:translate(0,-50%);font-family:"Galmuri11",var(--term);font-size:12px;font-weight:400;letter-spacing:.12em;line-height:1.4;-webkit-font-smoothing:none;color:var(--zc);background:rgba(6,6,12,.82);border:1px solid color-mix(in srgb,var(--zc) 45%,transparent);padding:6px 10px 6px 12px;white-space:nowrap;cursor:pointer;transition:border-color .3s,background .3s,opacity .45s}
 .cbox.l{transform:translate(-100%,-50%)}
 .cbox:hover,.cbox.sel{border-color:var(--zc);background:var(--zc2)}
 .radar.has-sel .cbox:not(.sel){opacity:.3}
 .callouts [data-z="1"]{--zc:#e6e3ff;--zc2:rgba(217,213,255,.14)}
 .callouts [data-z="2"]{--zc:#c6c2ec;--zc2:rgba(170,165,214,.14)}
 .callouts [data-z="3"]{--zc:#a6a2cc;--zc2:rgba(127,123,166,.14)}
-@media(max-width:600px){.cbox{font-size:11.5px;letter-spacing:.02em;padding:3px 7px}}
+@media(max-width:600px){.cbox{font-size:11px;letter-spacing:.04em;padding:3px 7px}}
 .radar-legend [data-z="1"]{--zc:#d9d5ff;--zc2:rgba(217,213,255,.14)}
 .radar-legend [data-z="2"]{--zc:#aaa5d6;--zc2:rgba(170,165,214,.12)}
 .radar-legend [data-z="3"]{--zc:#7f7ba6;--zc2:rgba(127,123,166,.12)}
 .radar .pl{font-family:var(--term);font-size:10px;letter-spacing:.04em;opacity:.95}
+.radar .pl{font-family:"Galmuri11",var(--term);font-size:12px;letter-spacing:.06em}
+@media(max-width:600px){.radar .pl{font-size:15px;letter-spacing:0}}
 .radar .dot text{font-family:var(--serif);fill:#e4e2f2;font-size:12px;letter-spacing:.02em;transition:fill .3s;paint-order:stroke;stroke:#05050a;stroke-width:3px}
 .radar .dot.faint text{fill:#9a99b4}
 .radar-legend{display:grid;gap:8px;grid-template-columns:1fr 1fr}
@@ -1173,7 +1177,7 @@ const CHARACTERS = [
     keywords:[], quote:"",
     desc:["D-110 이후 거행되는 이리키인 가문의 차기 가주 계승 의식이 개인 루트의 핵심 이벤트다."],
     events:["D-110 ???? 의식","D-58 검은 거래"], chats:[], image:"" },
-  { name:"헥스", en:"Hex", color:"#7a5cff", tagline:"천문원의 그림자", zone:0, role:"천문원의 그림자",
+  { name:"헥스", en:"Hex", color:"#d23a78", tagline:"천문원의 그림자", zone:0, role:"천문원의 그림자",
     fields:[["나이","26세"],["키","189cm"],["포지션","천문원 요원"],["계약 성좌","천칭을 든 유혹자",1],
       ["권능","대상과 접촉함으로써 그 존재에 관한 정보(기억, 생각, 욕망, 계약 성좌 등)를 읽어낼 수 있다. 대상과의 접촉이 깊어질수록 더 많은 정보가 해금된다.",1]],
     keywords:["#청년가장","#노란장판","#무뚝뚝"],
@@ -1360,7 +1364,7 @@ show(location.hash.slice(1)||"home");
 /* ───────── 인물 ───────── */
 const zk=c=>(c.zone===0||c.zone===1||c.zone===2||c.zone===3)?String(c.zone):"x";
 const sigil=`<svg viewBox="0 0 100 100" fill="none" stroke-width=".8"><circle cx="50" cy="50" r="46" stroke="#fff" stroke-opacity=".3"/><ellipse cx="50" cy="50" rx="46" ry="14" stroke="#fff" stroke-opacity=".25"/><path d="M50 8 L50 92 M8 50 L92 50" stroke="#fff" stroke-opacity=".2"/><path d="M50 28 L54 46 L72 50 L54 54 L50 72 L46 54 L28 50 L46 46 Z" stroke="currentColor" fill="currentColor" fill-opacity=".2"/></svg>`;
-const picHTML=(c,big)=>big&&c.full?`<div class="stage"><span class="bgname">${esc((c.en||c.name).toUpperCase())}</span><i class="floor"${c.floor?` style="${c.floor}"`:""}></i><span class="tick">${ZONES[zk(c)].cls} · ${ZONES[zk(c)].en}</span></div><img class="full"${c.fullStyle?` style="${c.fullStyle}"`:""} src="${c.full}" alt="${esc(c.name)}">`:(c.image?`<img src="${esc(c.image)}" alt="${esc(c.name)}" loading="lazy">`:`<div class="sg" style="color:var(--zc)">${sigil}</div>`)+`<div class="fx"></div>`;
+const picHTML=(c,big)=>big&&c.full?`<div class="stage"><span class="bgname">${esc((c.en||c.name).toUpperCase())}</span><i class="floor"${c.floor?` style="${c.floor}"`:""}></i><span class="tick">${ZONES[zk(c)].cls} · ${ZONES[zk(c)].en}</span></div><img class="full"${c.fullStyle?` style="${c.fullStyle}"`:""} src="${c.full}" alt="${esc(c.name)}" decoding="async">`:(c.image?`<img src="${esc(c.image)}" alt="${esc(c.name)}" loading="lazy" decoding="async">`:`<div class="sg" style="color:var(--zc)">${sigil}</div>`)+`<div class="fx"></div>`;
 const card=(c,i,flat)=>{const z=zk(c);return `<button class="ch${c.color?" hc":""}" data-ch="${i}" data-z="${z}"${c.color?` style="--cc:${c.color}"`:""}>
   <div class="pic">${picHTML(c)}<div class="sheen"></div>
     <span class="zl">${ZONES[z].cls}</span><span class="vert">${esc((c.en||(flat?"":ZONES[z].en)).toUpperCase())}</span>
@@ -1405,7 +1409,7 @@ function setZF(z){ZF=(ZF===z&&z!=="all")?"all":z;renderChars();}
 
 /* 관측 지도 (몽환 버전) */
 (()=>{
-  const R=[70,140,205,270], mid=[38,106,173,238], col={0:"#ffffff",1:"#d9d5ff",2:"#aaa5d6",3:"#7f7ba6"}, FILL=[.11,.065,.035,.015], LINE=[.75,.55,.4,.28];
+  const R=[70,140,205,270], mid=[50,106,173,238], col={0:"#ffffff",1:"#d9d5ff",2:"#aaa5d6",3:"#7f7ba6"}, FILL=[.11,.065,.035,.015], LINE=[.75,.55,.4,.28];
   const rad=d=>d*Math.PI/180, rnd=(a,b)=>a+Math.random()*(b-a);
   // ── 그라디언트·필터
   let s=`<defs>
@@ -1474,6 +1478,9 @@ function setZF(z){ZF=(ZF===z&&z!=="all")?"all":z;renderChars();}
     +((by.x||[]).length?`<button class="lg" data-zsel="x" data-z="x"><i></i><span><b>미분류</b><small>UNOBSERVED</small></span><em>${by.x.length}</em></button>`:"");
 })();
 renderChars();
+/* 지도가 화면 밖에 있을 땐 지도 애니메이션을 멈춰 둠 (보일 때는 그대로) */
+(()=>{const r=$("#radar"), sv=$("#radarSvg"); if(!r||!("IntersectionObserver" in window)) return;
+  new IntersectionObserver(([en])=>{const on=en.isIntersecting; r.classList.toggle("idle",!on); try{on?sv.unpauseAnimations():sv.pauseAnimations()}catch(_){}}).observe(r);})();
 
 /* 지도에서 구역 선택 → 강조 + 아래에 그 구역 인물 포트레잇 */
 let MAPZ=null;
@@ -1512,12 +1519,18 @@ document.addEventListener("click",e=>{
 });
 
 /* 카드 3D 기울기 */
-document.addEventListener("pointermove",e=>{
-  const c=e.target.closest(".ch"); if(!c) return;
-  const r=c.getBoundingClientRect(), x=(e.clientX-r.left)/r.width, y=(e.clientY-r.top)/r.height;
-  c.style.setProperty("--ry",`${(x-.5)*14}deg`);c.style.setProperty("--rx",`${(.5-y)*12}deg`);
-  c.style.setProperty("--mx",`${x*100}%`);c.style.setProperty("--my",`${y*100}%`);
-});
+{ // 마우스가 움직일 때마다가 아니라 화면 갱신 때 한 번만 계산
+  let pe=null, pend=false;
+  document.addEventListener("pointermove",e=>{
+    pe=e; if(pend) return; pend=true;
+    requestAnimationFrame(()=>{ pend=false; const ev=pe;
+      const c=ev.target.closest&&ev.target.closest(".ch"); if(!c) return;
+      const r=c.getBoundingClientRect(), x=(ev.clientX-r.left)/r.width, y=(ev.clientY-r.top)/r.height;
+      c.style.setProperty("--ry",`${(x-.5)*14}deg`);c.style.setProperty("--rx",`${(.5-y)*12}deg`);
+      c.style.setProperty("--mx",`${x*100}%`);c.style.setProperty("--my",`${y*100}%`);
+    });
+  },{passive:true});
+}
 document.addEventListener("pointerout",e=>{const c=e.target.closest(".ch");if(c&&!c.contains(e.relatedTarget)){c.style.setProperty("--rx","0deg");c.style.setProperty("--ry","0deg")}});
 
 /* 인물 상세 */
@@ -1667,35 +1680,41 @@ $("#replay").onclick=()=>{location.hash=""; location.reload()};
   function mote(rand){const d=(Math.random()+Math.random()+Math.random()-1.5)/1.5;return {dx:d*30,y:rand?Math.random():-.05*Math.random(),v:.0015+Math.random()*.004,s:Math.random()<.15?1.4:.8,al:.3+Math.random()*.6}}
 
   // 궤도 입자를 투명도·굵기별로 묶어 한 번에 그리기 (수천 번 → 16번)
-  const SB=[...Array(NB*2)].map(()=>null);
+  // 입자를 투명도·굵기별 묶음으로 나눠 한 번에 그림. 매 프레임 새 객체를 만들지 않도록 배열을 재사용(GC 끊김 방지)
+  const NBK=NB*2; let BK=new Int32Array(0), BX=new Float32Array(0);
   function drawParts(front,spd,ln,fadeIn){
-    for(let i=0;i<SB.length;i++) SB[i]=new Path2D();
-    for(const p of parts){
+    const N=parts.length;
+    if(BK.length<N){BK=new Int32Array(N);BX=new Float32Array(N);}
+    for(let i=0;i<N;i++){
+      const p=parts[i];
       if(!front) p.a+=p.sp*spd;
-      const sn=Math.sin(p.a); if((sn>0)!==front) continue;
+      const sn=Math.sin(p.a); BK[i]=-1;
+      if((sn>0)!==front) continue;
       const depth=(sn+1)/2, a=p.al*(.35+.65*depth)*fadeIn;
       if(a<.02) continue;
-      const bi=Math.min(NB-1,(a*NB)|0)+(depth>.55||p.w?NB:0);
-      const a0=p.a-p.len*ln, path=SB[bi];
-      path.moveTo(cx+p.r*Math.cos(a0),cy+p.r*TILT*Math.sin(a0));
-      path.ellipse(cx,cy,p.r,p.r*TILT,0,a0,p.a);
+      BK[i]=Math.min(NB-1,(a*NB)|0)+(depth>.55||p.w?NB:0); BX[i]=p.a-p.len*ln;
     }
     g.lineCap="round";
-    for(let i=0;i<SB.length;i++){
-      const thick=i>=NB, k=i%NB;
-      g.strokeStyle=`rgba(255,255,255,${(k+.5)/NB})`; g.lineWidth=thick?1.25:.7;
-      g.stroke(SB[i]);
+    for(let bi=0;bi<NBK;bi++){
+      g.beginPath(); let any=false;
+      for(let i=0;i<N;i++){ if(BK[i]!==bi) continue; const p=parts[i], a0=BX[i];
+        g.moveTo(cx+p.r*Math.cos(a0),cy+p.r*TILT*Math.sin(a0)); g.ellipse(cx,cy,p.r,p.r*TILT,0,a0,p.a); any=true; }
+      if(!any) continue;
+      const k=bi%NB; g.strokeStyle=SCOL[k]; g.lineWidth=bi>=NB?1.25:.7; g.stroke();
     }
   }
-  const ST=[...Array(8)].map(()=>null);
+  const SCOL=[...Array(NB)].map((_,k)=>`rgba(255,255,255,${(k+.5)/NB})`);
+  const STC=[...Array(8)].map((_,i)=>{const lv=((i%4)+.5)/4, a=.25+.75*lv; return i>=4?`rgba(189,182,255,${a*.8})`:`rgba(255,255,255,${a*.7})`;});
+  let SK=new Int8Array(0);
   function drawStars(warp){
-    for(let i=0;i<8;i++) ST[i]=new Path2D();
-    const stretch=warp>.05?warp*40:0;
-    for(const s of stars){
-      s.p+=s.s; const o=.5+.5*Math.sin(s.p), bi=Math.min(3,(o*4)|0)+s.c*4;
-      ST[bi].rect(s.x-px*s.z*24, s.y-py*s.z*14, s.r, s.r+stretch);
+    const stretch=warp>.05?warp*40:0, N=stars.length;
+    if(SK.length<N) SK=new Int8Array(N);
+    for(let i=0;i<N;i++){const s=stars[i]; s.p+=s.s; const o=.5+.5*Math.sin(s.p); SK[i]=Math.min(3,(o*4)|0)+s.c*4;}
+    for(let b=0;b<8;b++){
+      g.beginPath();
+      for(let i=0;i<N;i++){ if(SK[i]!==b) continue; const s=stars[i]; g.rect(s.x-px*s.z*24, s.y-py*s.z*14, s.r, s.r+stretch); }
+      g.fillStyle=STC[b]; g.fill();
     }
-    for(let i=0;i<8;i++){const lv=((i%4)+.5)/4, a=.25+.75*lv; g.fillStyle=i>=4?`rgba(189,182,255,${a*.8})`:`rgba(255,255,255,${a*.7})`; g.fill(ST[i]);}
   }
 
   let skip=false;
