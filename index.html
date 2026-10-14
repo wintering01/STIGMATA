@@ -420,6 +420,29 @@ details.fold.sec{padding:0}
 
 /* 연대기 */
 .chron{position:relative;margin-top:20px}
+.evsel{margin:10px 0 6px}
+.evpick{display:flex;gap:14px;overflow-x:auto;scrollbar-width:none;padding:6px 2px 4px}
+.evpick::-webkit-scrollbar{display:none}
+.evpick button{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:7px;background:none;border:0;cursor:pointer;color:var(--dim);font-size:.72rem;width:58px;transition:color .3s}
+.evpick .av{width:46px;height:46px;border-radius:50%;overflow:hidden;border:1px solid var(--line-strong);background:var(--cc,#111);position:relative;transition:border-color .3s,box-shadow .3s,opacity .3s;opacity:.55}
+.evpick .av img{width:100%;height:100%;object-fit:cover;object-position:50% 18%;transform:scale(1.25);transform-origin:50% 32%}
+.evpick .av.duo{border:0;background:none;overflow:visible;width:58px}
+.evpick .av.duo i{position:absolute;top:5px;width:36px;height:36px;border-radius:50%;overflow:hidden;border:1px solid var(--line-strong);background:var(--cc)}
+.evpick .av.duo i:first-child{left:0;z-index:1}.evpick .av.duo i:last-child{right:0}
+.evpick button.on .av.duo{box-shadow:none}
+.evpick button.on .av.duo i{border-color:var(--cc);box-shadow:0 0 0 1px #000,0 0 12px -2px var(--cc)}
+.evpick .av.all{display:grid;place-items:center;background:#000}
+.evpick .av.all svg{width:18px;height:18px;fill:#fff;filter:drop-shadow(0 0 4px rgba(255,255,255,.8))}
+.evpick .nm{white-space:nowrap;max-width:64px;overflow:hidden;text-overflow:ellipsis}
+.evpick button:hover .av{opacity:.85}
+.evpick button.on{color:#fff}
+.evpick button.on .av{opacity:1;border-color:var(--cc,#fff);box-shadow:0 0 0 2px #000,0 0 0 3px var(--cc,#fff),0 0 16px -2px var(--cc,#fff)}
+.evsel p{font-size:.8rem;color:var(--dim);margin:12px 0 0}
+.evpick:not(.picked) .av{opacity:.9}
+.chron.shut{display:none}
+.chron{animation:chronIn .5s ease}
+@keyframes chronIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+.ev .d.s1{font-size:1.15rem}
 .chron::before{content:"";position:absolute;left:78px;top:10px;bottom:10px;width:1px;background:linear-gradient(var(--line-strong),var(--line) 80%,transparent)}
 .ev{display:grid;grid-template-columns:66px 1fr;gap:28px;padding:16px 0;position:relative}
 .ev::before{content:"";position:absolute;left:75px;top:28px;width:7px;height:7px;border-radius:50%;background:var(--bg);border:1px solid var(--line-strong)}
@@ -1196,7 +1219,8 @@ body:not(.ready) .title-en span,body:not(.ready) .intro{animation-play-state:pau
       <p>결국 천문원은 종말의 관측 결과를 공식 발표하고, 세계는 역사상 처음으로 <b>멸망이 예고된 시대</b>에 진입한다.</p>
     </div>
 
-    <div class="sec" id="c-2" data-t="이벤트 일정"><h2><span class="no">§ 11</span>이벤트 일정 <span class="badge">다인챗 한정</span></h2>
+    <div class="sec" id="c-2" data-t="이벤트 일정"><h2><span class="no">§ 11</span>이벤트 일정</h2>
+      <div class="evsel"><div class="evpick" id="evSel" role="tablist" aria-label="일정 보기"></div><p id="evNote"></p></div>
       <div class="spoil" id="spoil"><div class="spgate"><div class="spg-in"><span class="spg-ic"><i style="font-style:normal;transform:rotate(-45deg)">!</i></span><b>스포일러 주의</b><small>SPOILER WARNING</small><p>이벤트 일정에는 이야기의 주요 전개가 포함되어 있습니다.</p><button class="spg-btn" data-spoil>열람하기</button></div></div>
       <div class="chron">
         <div class="ev key"><div class="d">D-129<small>PROLOGUE</small></div><div class="b"><h4>대관측</h4><p>모든 플레이어와 NPC가 반드시 참여하는 프롤로그 이벤트. 천문원의 대관측에서 『세계 멸망까지 130일』이라는 관측 결과가 발표된다.</p><span class="mark">※ 모든 세력이 처음으로 한자리에 모이는 메인 이벤트.</span></div></div>
@@ -1589,6 +1613,50 @@ function setZF(z){ZF=(ZF===z&&z!=="all")?"all":z;renderChars();}
     +((by.x||[]).length?`<button class="lg" data-zsel="x" data-z="x"><i></i><span><b>미분류</b><small>UNOBSERVED</small></span><em>${by.x.length}</em></button>`:"");
 })();
 renderChars();
+/* 이벤트 일정: 다인챗(D-day) / 캐릭터별 개인챗(날짜·조건) 전환 */
+(()=>{
+  const sel=$("#evSel"), chron=$("#spoil .chron"); if(!sel||!chron) return;
+  const KEYS=["obs","gala","rite","descent","auction","reso","acad","deal","end"];
+  const evs=[...chron.querySelectorAll(".ev")]; evs.forEach((e,i)=>{e.dataset.k=KEYS[i]; e.dataset.d=e.querySelector(".d").innerHTML;});
+  const byK=k=>evs.find(e=>e.dataset.k===k);
+  // 개인챗(시즌1) 표기
+  const S1={obs:["9.1","매년"],gala:["9.10","매년"],auction:["10.8","매년"],acad:["10.30","매년"],reso:["—","천문원 예보"],rite:["—","특별 사건"],descent:["—","특별 사건"],deal:["—","특별 사건"]};
+  // 개인챗에서 바뀌는 설명 (멸망 예고가 없는 세계)
+  const S1P={obs:"천문원이 지난 1년간의 관측 결과를 집계해 발표하는 연례 공식 행사. 이날의 발표가 향후 1년간 세계의 방향을 결정한다.",
+             gala:"1년에 한 번 개최되는 화신 전용 사교 연회. 크루즈 선상 파티로 진행된다. 세력 간 외교, 정보 교환, 계약, 동맹이 이루어지며, 연회장 내부에서는 원칙적으로 무력 충돌이 금지된다."};
+  const S1M={obs:""};
+  const keep={};["obs","gala"].forEach(k=>{const e=byK(k);keep[k]={p:e.querySelector(".b p").innerHTML,m:(e.querySelector(".b .mark")||{}).outerHTML||""};});
+  const COMMON=["obs","gala","auction","acad","reso"];
+  const special=c=>{const ev=(c.events||[]).join(" ");const r=[];if(ev.includes("????"))r.push("rite");if(ev.includes("성인강림"))r.push("descent");return r;};
+  const star=`<svg viewBox="0 0 20 20"><path d="M10 0 L11.6 8.4 L20 10 L11.6 11.6 L10 20 L8.4 11.6 L0 10 L8.4 8.4Z"/></svg>`;
+  sel.innerHTML=`<button type="button" role="tab" data-v="multi" style="--cc:#fff"><span class="av all">${star}</span><span class="nm">STIGMATA</span></button>`
+    +CHARACTERS.map((c,i)=>{
+      if(!c.image||c.name==="베타") return "";
+      if(c.name==="알파"){const b=CHARACTERS.find(x=>x.name==="베타");   // 알파·베타는 한 챗
+        return `<button type="button" role="tab" data-v="${i}" style="--cc:${c.color}"><span class="av duo"><i><img src="${c.image}" alt=""></i><i style="--cc:${b.color}"><img src="${b.image}" alt=""></i></span><span class="nm">알파·베타</span></button>`;}
+      return `<button type="button" role="tab" data-v="${i}" style="--cc:${c.color||"#fff"}"><span class="av"><img src="${c.image}" alt=""></span><span class="nm">${esc(c.name.replace(/^이리키인 /,""))}</span></button>`;}).join("");
+  let cur=null;
+  const GUIDE="이벤트 일정을 확인할 캐릭터를 선택하세요.";
+  function close(){cur=null;chron.classList.add("shut");sel.classList.remove("picked");sel.querySelectorAll("button").forEach(b=>{b.classList.remove("on");b.setAttribute("aria-selected","false")});$("#evNote").textContent=GUIDE;}
+  function show(v){
+    if(cur===String(v)){close();return;} cur=String(v); chron.classList.remove("shut"); sel.classList.add("picked");
+    const multi=v==="multi", c=multi?null:CHARACTERS[+v];
+    const list=multi?KEYS:[...COMMON,...special(c)];
+    evs.forEach(e=>{const k=e.dataset.k, on=list.includes(k); e.style.display=on?"":"none"; if(!on) return;
+      const d=e.querySelector(".d");
+      if(multi){d.innerHTML=e.dataset.d;d.classList.remove("s1");}
+      else{d.innerHTML=`${S1[k][0]}<small>${S1[k][1]}</small>`;d.classList.add("s1");}
+      if(keep[k]){const b=e.querySelector(".b"),p=b.querySelector("p"),m=b.querySelector(".mark");
+        p.innerHTML=multi?keep[k].p:S1P[k]; if(m) m.style.display=multi?"":"none"; }
+    });
+    list.forEach(k=>chron.appendChild(byK(k)));
+    sel.querySelectorAll("button").forEach(b=>{const on=b.dataset.v===String(v);b.classList.toggle("on",on);b.setAttribute("aria-selected",on)});
+    $("#evNote").textContent=multi?"모든 사건이 '멸망까지 130일' 안에 일어납니다."
+      :"연중 행사는 매년 같은 날에, 특별 사건은 이야기의 흐름에 따라 일어납니다.";
+  }
+  sel.addEventListener("click",e=>{const b=e.target.closest("button[data-v]"); if(b) show(b.dataset.v);}); close();
+})();
+
 /* 지도가 화면 밖에 있을 땐 지도 애니메이션을 멈춰 둠 (보일 때는 그대로) */
 (()=>{const r=$("#radar"), sv=$("#radarSvg"); if(!r||!("IntersectionObserver" in window)) return;
   new IntersectionObserver(([en])=>{const on=en.isIntersecting; r.classList.toggle("idle",!on); try{on?sv.unpauseAnimations():sv.pauseAnimations()}catch(_){}}).observe(r);})();
