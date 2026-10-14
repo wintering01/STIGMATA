@@ -143,6 +143,52 @@ main{position:relative;z-index:2}
 .ost:hover{border-color:var(--line-strong);color:var(--ink)}
 button.ost{cursor:pointer;background:none;font:inherit;font-family:var(--mono);font-size:.72rem}
 .ost.off .eq b{animation-play-state:paused;height:3px}
+/* 미니 플레이어: 검은 바탕 + 재생할 때만 은은하게 번지는 빛 */
+.bgmp{position:fixed;right:18px;bottom:18px;z-index:60;width:262px;border-radius:14px;
+  background:#000;border:1px solid rgba(255,255,255,.08);box-shadow:0 14px 40px -12px rgba(0,0,0,.9);
+  font-family:var(--mono);color:#cfd3e6;transition:opacity .5s,border-color .6s,box-shadow .6s}
+.bgmp::before{content:"";position:absolute;left:14%;right:14%;top:-1px;height:1px;pointer-events:none;border-radius:1px;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.7),transparent);opacity:.25;transition:opacity .8s}
+.bgmp.on{border-color:rgba(255,255,255,.13);box-shadow:0 14px 40px -12px rgba(0,0,0,.9),0 0 36px -16px rgba(230,235,255,.45)}
+.bgmp.on::before{opacity:.85}
+body.intro-on .bgmp{opacity:0;pointer-events:none}
+.bgmp-h{position:absolute;top:8px;right:10px;z-index:2}
+.bgmp-h span{display:none}
+.bgmp-min{background:none;border:0;color:rgba(220,225,245,.35);cursor:pointer;width:18px;height:18px;padding:0;display:grid;place-items:center}
+.bgmp-min:hover{color:#fff}
+.bgmp-min svg{width:10px;height:10px;fill:none;stroke:currentColor;stroke-width:1.2;stroke-linecap:round}
+.bgmp-b{display:grid;grid-template-columns:38px 1fr 54px;gap:12px;align-items:center;padding:12px 16px 12px 12px}
+.bgmp-pp{position:relative;width:38px;height:38px;border-radius:50%;border:1px solid rgba(255,255,255,.22);background:#000;color:#fff;cursor:pointer;display:grid;place-items:center;transition:border-color .5s,box-shadow .5s}
+.bgmp-pp:hover{border-color:rgba(255,255,255,.5)}
+.bgmp-pp::after{content:"";position:absolute;inset:-14px;border-radius:50%;pointer-events:none;z-index:-1;
+  background:radial-gradient(closest-side,rgba(235,238,255,.22),transparent);opacity:0;transition:opacity .8s}
+.bgmp.on .bgmp-pp{border-color:rgba(255,255,255,.55);box-shadow:0 0 14px -4px rgba(235,238,255,.7)}
+.bgmp.on .bgmp-pp::after{opacity:1;animation:bgmpBreath 4s ease-in-out infinite}
+@keyframes bgmpBreath{50%{opacity:.45}}
+.bgmp-pp .rp{position:absolute;inset:-1px;border-radius:50%;border:1px solid rgba(255,255,255,.4);pointer-events:none;opacity:0}
+.bgmp.on .bgmp-pp .rp{animation:bgmpRip 3.6s cubic-bezier(.2,.6,.3,1) infinite}
+.bgmp.on .bgmp-pp .rp+.rp{animation-delay:1.8s}
+.bgmp-pp .rp+.rp+.rp{display:none}
+@keyframes bgmpRip{0%{transform:scale(1);opacity:.6}100%{transform:scale(1.9);opacity:0}}
+.bgmp-pp svg{width:10px;height:12px;fill:none;stroke:#fff;stroke-width:1.2;stroke-linejoin:round;stroke-linecap:round}
+.bgmp.on .bgmp-pp svg{filter:drop-shadow(0 0 3px rgba(255,255,255,.8))}
+.bgmp-pp .pl{margin-left:2px}
+.bgmp-pp .pa,.bgmp.on .bgmp-pp .pl{display:none}.bgmp.on .bgmp-pp .pa{display:block}
+.bgmp-t{min-width:0;line-height:1.45}.bgmp-t b{display:block;font-weight:400;font-size:.5rem;letter-spacing:.3em;color:rgba(220,225,245,.4);transition:color .6s}
+.bgmp.on .bgmp-t b{color:rgba(255,255,255,.85)}
+.bgmp-t span{display:block;font-family:var(--serif);font-size:.8rem;color:#eef0fa;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bgmp input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:1px;margin-top:10px;background:linear-gradient(90deg,rgba(255,255,255,.6),rgba(255,255,255,.12));outline:none}
+.bgmp input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:7px;height:7px;border-radius:50%;background:#fff;box-shadow:0 0 6px rgba(255,255,255,.8);cursor:pointer}
+.bgmp input[type=range]::-moz-range-thumb{width:7px;height:7px;border:0;border-radius:50%;background:#fff;box-shadow:0 0 6px rgba(255,255,255,.8);cursor:pointer}
+.bgmp-yt{position:absolute;width:2px;height:2px;overflow:hidden;opacity:.01;pointer-events:none;bottom:0;left:0}
+/* 접은 상태: 동그란 버튼 하나 + 작은 펼치기 */
+.bgmp.min{width:auto;border-radius:999px}
+.bgmp.min .bgmp-t,.bgmp.min input[type=range]{display:none}
+.bgmp.min .bgmp-b{grid-template-columns:auto;padding:7px 30px 7px 7px}
+.bgmp.min .bgmp-h{top:50%;right:8px;transform:translateY(-50%)}
+@media(max-width:600px){.bgmp{right:10px;bottom:10px;width:236px}.bgmp-b{grid-template-columns:36px 1fr 46px;gap:10px;padding:10px 14px 10px 10px}.bgmp-pp{width:36px;height:36px}}
+button.ost{cursor:pointer;background:none;font:inherit;font-family:var(--mono);font-size:.72rem}
+.ost.off .eq b{animation-play-state:paused;height:3px}
 .ost .eq{display:inline-flex;gap:2px;align-items:flex-end;height:10px}
 .ost .eq b{width:2px;background:var(--accent);animation:eq 1s ease-in-out infinite}
 .ost .eq b:nth-child(2){animation-delay:.2s}.ost .eq b:nth-child(3){animation-delay:.45s}
@@ -616,6 +662,17 @@ details.fold.sec{padding:0}
 .spoil{position:relative}
 .spoil.locked .chron{filter:blur(9px);opacity:.45;pointer-events:none;user-select:none;max-height:520px;overflow:hidden;-webkit-mask:linear-gradient(180deg,#000 50%,transparent);mask:linear-gradient(180deg,#000 50%,transparent)}
 .spgate{display:none}
+/* 이벤트별 스포일러: 내용만 흐리게, 누르면 펼침 */
+.spx{position:relative;cursor:pointer;border-radius:4px;outline-offset:3px}
+.spx-c{filter:blur(6px);opacity:.55;user-select:none;transition:filter .5s,opacity .5s;pointer-events:none}
+.spx-l{position:absolute;left:0;top:50%;transform:translateY(-50%);font-family:var(--mono);font-size:.62rem;letter-spacing:.22em;color:var(--ink);background:rgba(6,6,12,.85);border:1px solid var(--line-strong);padding:5px 10px;white-space:nowrap;transition:opacity .3s}
+.spx:hover .spx-l{border-color:var(--accent);color:#fff}
+.spx.open{cursor:default}
+.evh{font-style:normal;opacity:.55;letter-spacing:.15em}
+.evs{cursor:pointer}.evs i{font-style:normal;filter:blur(4px);transition:filter .4s;user-select:none}
+.evs.open{cursor:default}.evs.open i{filter:none;user-select:auto}
+.spx.open .spx-c{filter:none;opacity:1;user-select:auto;pointer-events:auto}
+.spx.open .spx-l{opacity:0;pointer-events:none}
 .spoil.locked .spgate{display:flex;position:absolute;inset:0;z-index:3;align-items:flex-start;justify-content:center;padding-top:70px}
 .spg-in{text-align:center;padding:26px 30px;border:1px solid var(--accent-dim);background:rgba(7,7,13,.85);max-width:340px;box-shadow:0 0 50px -10px rgba(189,182,255,.35)}
 .spg-ic,.spm-ic{display:inline-grid;place-items:center;width:30px;height:30px;border:1px solid var(--accent);color:var(--accent);font-family:var(--mono);font-size:.9rem;margin-bottom:10px;transform:rotate(45deg)}
@@ -809,7 +866,7 @@ body:not(.ready) .title-en span,body:not(.ready) .intro{animation-play-state:pau
     <div class="gate intro" style="--d:2.2s">
       <button class="enter" id="enter" aria-label="세계관 소개로 이동"></button>
       <div class="gate-lab">OPEN THE ARCHIVE</div>
-      <a class="ost" href="https://youtu.be/bzlHPlq8hIs" target="_blank" rel="noopener"><span class="eq"><b></b><b></b><b></b></span>Yuki Kajiura — Sis Puella Magica!</a>
+      <button class="ost off" type="button" data-bgm-toggle><span class="eq"><b></b><b></b><b></b></span>Yuki Kajiura — Sis Puella Magica!</button>
     </div>
     <div class="scroll-hint intro" style="--d:2.6s">SCROLL ↓</div>
   </div>
@@ -1134,16 +1191,16 @@ body:not(.ready) .title-en span,body:not(.ready) .intro{animation-play-state:pau
     </div>
 
     <div class="sec" id="c-2" data-t="이벤트 일정"><h2><span class="no">§ 11</span>이벤트 일정 <span class="badge">다인챗 한정</span></h2>
-      <div class="spoil locked" id="spoil"><div class="spgate"><div class="spg-in"><span class="spg-ic"><i style="font-style:normal;transform:rotate(-45deg)">!</i></span><b>스포일러 주의</b><small>SPOILER WARNING</small><p>이벤트 일정에는 이야기의 주요 전개가 포함되어 있습니다.</p><button class="spg-btn" data-spoil>열람하기</button></div></div>
+      <div class="spoil" id="spoil"><div class="spgate"><div class="spg-in"><span class="spg-ic"><i style="font-style:normal;transform:rotate(-45deg)">!</i></span><b>스포일러 주의</b><small>SPOILER WARNING</small><p>이벤트 일정에는 이야기의 주요 전개가 포함되어 있습니다.</p><button class="spg-btn" data-spoil>열람하기</button></div></div>
       <div class="chron">
         <div class="ev key"><div class="d">D-129<small>PROLOGUE</small></div><div class="b"><h4>대관측</h4><p>모든 플레이어와 NPC가 반드시 참여하는 프롤로그 이벤트. 천문원의 대관측에서 『세계 멸망까지 130일』이라는 관측 결과가 발표된다.</p><span class="mark">※ 모든 세력이 처음으로 한자리에 모이는 메인 이벤트.</span></div></div>
         <div class="ev"><div class="d">D-120</div><div class="b"><h4>화신 연회</h4><p>1년에 한 번 개최되는 화신 전용 사교 연회. 크루즈 선상 파티로 진행된다. 세력 간 외교, 정보 교환, 계약, 동맹이 이루어지며, 연회장 내부에서는 원칙적으로 무력 충돌이 금지된다. 원래는 친목이 메인이었으나, 대관측 날의 관측 결과로 인하여 조금은 진중한 분위기.</p></div></div>
-        <div class="ev key"><div class="d">D-110<small>이후</small></div><div class="b"><h4>???? 의식</h4><p>이리키인 가문에서 거행하는 차기 가주 계승 의식.</p><span class="mark">※ 라이 개인 루트의 핵심 이벤트.</span></div></div>
-        <div class="ev"><div class="d">D-100</div><div class="b"><h4>성인강림의식</h4><p>성해문이 집행하는 최대 규모의 종교 의식.</p></div></div>
+        <div class="ev key"><div class="d">D-110<small>이후</small></div><div class="b"><div class="spx" role="button" tabindex="0" aria-label="스포일러 보기"><div class="spx-c"><h4>???? 의식</h4><p>이리키인 가문에서 거행하는 차기 가주 계승 의식.</p><span class="mark">※ 라이 개인 루트의 핵심 이벤트.</span></div><span class="spx-l">SPOILER · 눌러서 보기</span></div></div></div>
+        <div class="ev"><div class="d">D-100</div><div class="b"><div class="spx" role="button" tabindex="0" aria-label="스포일러 보기"><div class="spx-c"><h4>성인강림의식</h4><p>성해문이 집행하는 최대 규모의 종교 의식.</p></div><span class="spx-l">SPOILER · 눌러서 보기</span></div></div></div>
         <div class="ev"><div class="d">D-92</div><div class="b"><h4>성유물 경매회</h4><p>세계 최대 규모의 암시장 경매. 성유물, 성핵 파편, 봉인된 권능, 성역 유물 등이 거래된다. 천문원, 명문 화신 가문, 천쇄회, 성해문, 기업, 독립 화신 등 대부분의 세력이 참가한다. 거래뿐 아니라 암살, 잠입, 도난, 배신이 빈번하게 일어난다.</p></div></div>
         <div class="ev"><div class="d">D-80</div><div class="b"><h4>성흔 공명제</h4><p>모든 화신의 성흔이 동시에 공명하는 날. 권능이 평소보다 강화되며 성좌와 계약자의 연결이 가장 깊어진다. 성좌의 반응이 활발해지고 화신들 사이의 공명 현상이 발생하기도 한다.</p></div></div>
         <div class="ev"><div class="d">D-70</div><div class="b"><h4>천문원 학술총회</h4><p>천문원이 개최하는 세계 최대 규모의 학술 행사. 성좌, 성역, 성흔, 권능에 관한 최신 연구가 발표된다. 연구원과 화신, 명문가 관계자들이 대거 참석하며, 공식 발표 이면에서는 정보 거래와 정치 싸움도 끊이지 않는다.</p></div></div>
-        <div class="ev key"><div class="d">D-58</div><div class="b"><h4>검은 거래</h4><p>낙성채성 최대 규모의 암시장에 정체불명의 '미확인 성핵'이 출품된다는 정보가 퍼진다. 겉보기에는 평범한 성핵처럼 보이지만, 감정과 기억에 반응하며 미약한 의식을 드러내는 등 기존 성핵에서는 발견된 적 없는 현상이 관측된다.</p><span class="mark">※ 주요 등장 NPC : 헥스, 진백겸, 뤼샤오위, 유시영 ({user}의 선택에 따라 라이, 알파·베타 합류 가능)</span></div></div>
+        <div class="ev key"><div class="d">D-58</div><div class="b"><div class="spx" role="button" tabindex="0" aria-label="스포일러 보기"><div class="spx-c"><h4>검은 거래</h4><p>낙성채성 최대 규모의 암시장에 정체불명의 '미확인 성핵'이 출품된다는 정보가 퍼진다. 겉보기에는 평범한 성핵처럼 보이지만, 감정과 기억에 반응하며 미약한 의식을 드러내는 등 기존 성핵에서는 발견된 적 없는 현상이 관측된다.</p><span class="mark">※ 주요 등장 NPC : 헥스, 진백겸, 뤼샤오위, 유시영 ({user}의 선택에 따라 라이, 알파·베타 합류 가능)</span></div><span class="spx-l">SPOILER · 눌러서 보기</span></div></div></div>
         <div class="ev end"><div class="d">D-0<small>DOOMSDAY</small></div><div class="b"><h4>관측상 세계가 멸망하는 날</h4><p>···</p></div></div>
       </div>
       </div>
@@ -1221,7 +1278,7 @@ const CHARACTERS = [
     keywords:["#문란함","#차라남","#애정결핍"],
     desc:["천쇄회의 행동대장이자, 낙성채성에서 가장 위험한 남자. 누구에게나 다정하고, 누구에게나 사랑을 속삭이며, 누구에게나 쉽게 품을 내어준다. 하지만 정작 그 누구도 그의 곁에 오래 머물지는 못한다. 그 누구도 사랑하지 않는 그의 진심은…"],
     events:["D-58 검은 거래"], image:IMG.lsy, full:IMG.lsyFull },
-  { name:"유시영", en:"Yoo Siyoung", color:"#8ec5ff", tagline:"독립 화신", zone:1, role:"독립 화신",
+  { name:"유시영", en:"Yoo Siyoung", color:"#8ec5ff", tagline:"미망의 언더테이커", zone:1, role:"미망의 언더테이커",
     fields:[["나이","26세"],["키","187cm"],["포지션","장의사"],["계약 성좌","뒤돌아본 자",1],
       ["권능","흩어진 영혼이나 기억의 파편을 잠시 이어 붙인다. 완전한 부활은 불가능하지만, 생전의 의식과 대화를 잠시 재현할 수 있다.",1]],
     keywords:["#쿨데레","#(유사) 미망인","#순애"],
@@ -1405,14 +1462,18 @@ show(location.hash.slice(1)||"home");
 /* ───────── 인물 ───────── */
 const zk=c=>(c.zone===0||c.zone===1||c.zone===2||c.zone===3)?String(c.zone):"x";
 const sigil=`<svg viewBox="0 0 100 100" fill="none" stroke-width=".8"><circle cx="50" cy="50" r="46" stroke="#fff" stroke-opacity=".3"/><ellipse cx="50" cy="50" rx="46" ry="14" stroke="#fff" stroke-opacity=".25"/><path d="M50 8 L50 92 M8 50 L92 50" stroke="#fff" stroke-opacity=".2"/><path d="M50 28 L54 46 L72 50 L54 54 L50 72 L46 54 L28 50 L46 46 Z" stroke="currentColor" fill="currentColor" fill-opacity=".2"/></svg>`;
+/* 스포일러 이벤트: 날짜만 보이고 이름은 가림 (상세 창에서는 눌러서 열기) */
+const SPOIL_EV=["???? 의식","성인강림의식","검은 거래"];
+const evTag=(t,reveal)=>{const m=String(t).match(/^(D-\d+)\s*(.*)$/); if(!m||!SPOIL_EV.some(x=>m[2].includes(x))) return `<span>${esc(t)}</span>`;
+  return reveal?`<span class="evs" role="button" tabindex="0" title="스포일러 · 눌러서 보기">${m[1]} <i>${esc(m[2])}</i></span>`:`<span>${m[1]} <i class="evh">SPOILER</i></span>`;};
 const picHTML=(c,big)=>big&&c.full?`<div class="stage"><span class="bgname">${esc((c.en||c.name).toUpperCase())}</span><i class="floor"${c.floor?` style="${c.floor}"`:""}></i><span class="tick">${ZONES[zk(c)].cls} · ${ZONES[zk(c)].en}</span></div><img class="full"${c.fullStyle?` style="${c.fullStyle}"`:""} src="${c.full}" alt="${esc(c.name)}" decoding="async">`:(c.image?`<img src="${esc(c.image)}" alt="${esc(c.name)}" loading="lazy" decoding="async">`:`<div class="sg" style="color:var(--zc)">${sigil}</div>`)+`<div class="fx"></div>`;
 const card=(c,i,flat)=>{const z=zk(c);return `<button class="ch${c.color?" hc":""}" data-ch="${i}" data-z="${z}"${c.color?` style="--cc:${c.color}"`:""}>
   <div class="pic">${picHTML(c)}<div class="sheen"></div>
     <span class="zl">${ZONES[z].cls}</span><span class="vert">${esc((c.en||(flat?"":ZONES[z].en)).toUpperCase())}</span>
     ${c.constellation?`<span class="cst">${esc(c.constellation)}</span>`:""}</div>
   <div class="info"><div class="nm">${esc(c.name)}</div>
-    <div class="rl">${esc([!flat&&ZONES[z].k!=="미분류"?ZONES[z].k:"",c.area,c.faction||c.role].filter(Boolean).join(" · ")||"관측 기록 준비 중")}</div>
-    <div class="ev-tags">${(c.events||[]).map(t=>`<span>${esc(t)}</span>`).join("")}</div></div></button>`};
+    <div class="rl">${esc([!flat&&ZONES[z].k!=="미분류"?ZONES[z].k:"",c.faction||c.role].filter(Boolean).join(" · ")||"관측 기록 준비 중")}</div>
+    <div class="ev-tags">${(c.events||[]).map(t=>evTag(t,false)).join("")}</div></div></button>`};
 
 let ZF="all";
 function renderChars(){
@@ -1446,6 +1507,9 @@ function setZF(z){ZF=(ZF===z&&z!=="all")?"all":z;renderChars();}
   pm.onclick=e=>{ if(e.target===pm) close(); };
   addEventListener("keydown",e=>{ if(e.key==="Escape") close(); });
   document.addEventListener("click",e=>{ if(e.target.closest("[data-spoil]")) open(); });
+  const spx=e=>{const x=e.target.closest(".spx:not(.open),.evs:not(.open)"); if(x) x.classList.add("open");};
+  document.addEventListener("click",spx);
+  document.addEventListener("keydown",e=>{ if((e.key==="Enter"||e.key===" ")&&e.target.classList&&(e.target.classList.contains("spx")||e.target.classList.contains("evs"))){e.preventDefault();spx(e);} });
 })();
 
 /* 관측 지도 (몽환 버전) */
@@ -1571,7 +1635,6 @@ document.addEventListener("dragstart",e=>{ if(e.target.tagName==="IMG") e.preven
     requestAnimationFrame(()=>{ pend=false; const ev=pe;
       const c=ev.target.closest&&ev.target.closest(".ch"); if(!c) return;
       const r=c.getBoundingClientRect(), x=(ev.clientX-r.left)/r.width, y=(ev.clientY-r.top)/r.height;
-      c.style.setProperty("--ry",`${(x-.5)*14}deg`);c.style.setProperty("--rx",`${(.5-y)*12}deg`);
       c.style.setProperty("--mx",`${x*100}%`);c.style.setProperty("--my",`${y*100}%`);
     });
   },{passive:true});
@@ -1594,7 +1657,7 @@ document.addEventListener("click",e=>{
     ${(c.keywords||[]).length?`<div class="kw">${c.keywords.map(k=>`<span>${esc(k)}</span>`).join("")}</div>`:""}
     <dl class="fields">${F.map(([k,v,w])=>`<div class="${w?"w":""}"><dt>${k}</dt><dd>${v?esc(v):'<span class="empty">—</span>'}</dd></div>`).join("")}</dl>
     ${(c.sec||[]).map(([h,p])=>`<h5>${esc(h)}</h5><p>${esc(p)}</p>`).join("")}
-    ${(c.events||[]).length?`<h5>관련 이벤트</h5><div class="kw">${c.events.map(k=>`<span>${esc(k)}</span>`).join("")}</div>`:""}
+    ${(c.events||[]).length?`<h5>관련 이벤트</h5><div class="kw">${c.events.map(k=>evTag(k,true)).join("")}</div>`:""}
     ${(c.chats||[]).length?`<h5>채팅 바로가기</h5><div class="chatlinks">${c.chats.map(l=>l.url?`<a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.label)} ↗</a>`:`<span>${esc(l.label)}</span>`).join("")}</div>`:""}`;
   modal.classList.add("on"); $("#mbox").scrollTop=0;
 });
@@ -1639,6 +1702,7 @@ window.__sceneT=performance.now();   // 배경 장면(빛기둥·소용돌이)�
   }
   function open(){
     if(done) return; done=true;
+    if(window.__bgmPlay) window.__bgmPlay();
     // 빛줄기가 아직 내려오는 중이면, 빠르게 감아서 착지시킨 뒤에 터뜨림
     const LAND=1.8, el=(performance.now()-window.__sceneT)/1000;
     if(el>=LAND){ burst(); return; }
@@ -1988,6 +2052,37 @@ $("#replay").onclick=()=>{location.hash=""; location.reload()};
   addEventListener("resize",()=>{init(); if(still) frame();});
   addEventListener("scroll",()=>{if(still) frame();},{passive:true});
   init(); frame();
+})();
+</script>
+<!-- 배경음악 미니 플레이어 (유튜브를 페이지 안에서 재생, 새 창 없음) -->
+<div class="bgmp" id="bgmp" aria-label="배경음악">
+  <div class="bgmp-h"><span>BGM / STIGMATA</span><button type="button" class="bgmp-min" id="bgmpMin" aria-label="접기"><svg viewBox="0 0 10 10"><path d="M2 5H8"/></svg></button></div>
+  <div class="bgmp-b">
+    <button type="button" class="bgmp-pp" data-bgm-toggle aria-label="재생/정지"><span class="rp"></span><span class="rp"></span><span class="rp"></span><svg class="pl" viewBox="0 0 12 14" aria-hidden="true"><path d="M2.5 1.5 L10.5 7 L2.5 12.5 Z"/></svg><svg class="pa" viewBox="0 0 12 14" aria-hidden="true"><path d="M4 1.5V12.5M8 1.5V12.5"/></svg></button>
+    <div class="bgmp-t"><b id="bgmpSt">READY</b><span>Sis Puella Magica!</span></div>
+    <input type="range" min="0" max="100" value="40" id="bgmpVol" aria-label="볼륨">
+  </div>
+  <div class="bgmp-yt"><div id="bgmpYT"></div></div>
+</div>
+<script>
+(()=>{
+  const ID="bzlHPlq8hIs", box=document.getElementById("bgmp"), st=document.getElementById("bgmpSt"), vol=document.getElementById("bgmpVol");
+  let p=null, ready=false, playing=false, want=false;
+  const ui=()=>{box.classList.toggle("on",playing);document.querySelectorAll("[data-bgm-toggle]").forEach(b=>b.classList.toggle("off",!playing));st.textContent=playing?"PLAYING":(ready?"PAUSED":"LOADING")};
+  window.onYouTubeIframeAPIReady=()=>{
+    p=new YT.Player("bgmpYT",{videoId:ID,width:200,height:120,playerVars:{loop:1,playlist:ID,controls:0,playsinline:1,rel:0,disablekb:1},
+      events:{onReady:()=>{ready=true;p.setVolume(+vol.value);ui();if(want)play();},
+              onStateChange:e=>{if(e.data===1)playing=true;else if(e.data===2||e.data===0)playing=false;ui();},
+              onError:()=>{st.textContent="ERROR";}}});
+  };
+  const sc=document.createElement("script");sc.src="https://www.youtube.com/iframe_api";sc.onerror=()=>{st.textContent="OFFLINE"};document.head.appendChild(sc);
+  function play(){ if(!ready){want=true;return;} p.unMute();p.setVolume(+vol.value);p.playVideo(); }
+  function pause(){ if(ready) p.pauseVideo(); want=false; }
+  window.__bgmPlay=play;
+  document.addEventListener("click",e=>{const t=e.target.closest("[data-bgm-toggle]");if(!t)return;e.preventDefault();e.stopPropagation();playing?pause():play();});
+  vol.addEventListener("input",()=>{if(ready)p.setVolume(+vol.value)});
+  const mb=document.getElementById("bgmpMin");mb.onclick=()=>{const m=box.classList.toggle("min");mb.innerHTML=m?'<svg viewBox="0 0 10 10"><path d="M6 2L3 5L6 8"/></svg>':'<svg viewBox="0 0 10 10"><path d="M2 5H8"/></svg>';mb.setAttribute("aria-label",m?"펼치기":"접기")};
+  ui();
 })();
 </script>
 </body>
