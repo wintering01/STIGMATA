@@ -2148,11 +2148,8 @@ $("#replay").onclick=()=>{location.hash=""; location.reload()};
   window.onYouTubeIframeAPIReady=()=>{
     p=new YT.Player("bgmpYT",{videoId:ID,width:200,height:120,playerVars:{loop:1,playlist:ID,controls:0,playsinline:1,rel:0,disablekb:1},
       events:{onReady:()=>{ready=true;p.setVolume(+vol.value);ui();
-                // 인트로 중이면 소리 없이 미리 불러와 둠 → 빛이 터질 때 바로 첫 음이 나오게
-                if(document.body.classList.contains("intro-on")&&!want){pre=true;p.mute();p.playVideo();}
                 if(want)play();},
               onStateChange:e=>{
-                if(pre){ if(e.data===1){p.pauseVideo();p.seekTo(START,true);pre=false;} return; }
                 if(e.data===1)playing=true;else if(e.data===2||e.data===0)playing=false;ui();},
               onError:()=>{st.textContent="ERROR";}}});
   };
