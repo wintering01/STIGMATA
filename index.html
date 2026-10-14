@@ -1703,12 +1703,13 @@ window.__sceneT=performance.now();   // 배경 장면(빛기둥·소용돌이)�
   });
   intro.addEventListener("pointerleave",()=>{window.__hov=0});
   function burst(){
-    if(window.__bgmHit) window.__bgmHit();   // 빛이 터지는 순간 곡의 첫 종소리가 울리게
     window.__hov=0; window.__burstT=performance.now(); window.__warp=1.4;
     setTimeout(()=>{document.body.classList.remove("intro-on");ready();intro.remove()},260);
   }
   function open(){
     if(done) return; done=true;
+    // 누르는 그 순간(사용자 동작 안)에 재생 → 아이폰에서도 자동으로 나옴. 첫 종소리는 빛이 터질 때쯤 도착
+    if(window.__bgmHit) window.__bgmHit();
     // 빛줄기가 아직 내려오는 중이면, 빠르게 감아서 착지시킨 뒤에 터뜨림
     const LAND=1.8, el=(performance.now()-window.__sceneT)/1000;
     if(el>=LAND){ burst(); return; }
@@ -2073,7 +2074,7 @@ $("#replay").onclick=()=>{location.hash=""; location.reload()};
 <script>
 (()=>{
   const ID="a4-Zuv-MakI", box=document.getElementById("bgmp"), st=document.getElementById("bgmpSt"), vol=document.getElementById("bgmpVol");
-  const START=0;   // 곡 첫 종소리 위치(초). 앞에 무음이 있으면 여기 숫자를 늘리면 됨
+  const START=1;   // 곡 첫 종소리 위치(초). 앞에 무음이 있으면 여기 숫자를 늘리면 됨
   let p=null, ready=false, playing=false, want=false, pre=false;
   const ui=()=>{box.classList.toggle("on",playing);document.querySelectorAll("[data-bgm-toggle]").forEach(b=>b.classList.toggle("off",!playing));st.textContent=playing?"PLAYING":(ready?"PAUSED":"LOADING")};
   window.onYouTubeIframeAPIReady=()=>{
