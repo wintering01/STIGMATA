@@ -1778,17 +1778,14 @@ window.__sceneT=performance.now();   // 배경 장면(빛기둥·소용돌이)�
     if(done) return; done=true;
     // 누르는 그 순간(사용자 동작 안)에 재생 → 아이폰에서도 자동으로 나옴. 첫 종소리는 빛이 터질 때쯤 도착
     if(window.__bgmHit) window.__bgmHit();
-    // 음악이 실제로 소리 나기 시작하는 순간에 빛이 터지도록 맞춤 (최대 1.5초까지만 기다림)
-    let fired=false; const go=()=>{ if(fired) return; fired=true; window.removeEventListener("bgm-playing",go); burst(); };
-    const sync=()=>{ if(window.__bgmReady&&!window.__bgmPlaying){ window.addEventListener("bgm-playing",go); setTimeout(go,1500); } else go(); };
     // 빛줄기가 아직 내려오는 중이면, 빠르게 감아서 착지시킨 뒤에 터뜨림
     const LAND=1.8, el=(performance.now()-window.__sceneT)/1000;
-    if(el>=LAND){ sync(); return; }
+    if(el>=LAND){ burst(); return; }
     const need=LAND-el, dur=Math.min(.55,.25+need*.15)*1000, t0=performance.now(), s0=window.__sceneT;
     (function ff(){
       const k=Math.min(1,(performance.now()-t0)/dur), e=1-Math.pow(1-k,2);
       window.__sceneT=s0-need*1000*e;
-      if(k<1) requestAnimationFrame(ff); else sync();
+      if(k<1) requestAnimationFrame(ff); else burst();
     })();
   }
   intro.addEventListener("click",open);
@@ -2151,17 +2148,23 @@ $("#replay").onclick=()=>{location.hash=""; location.reload()};
   window.onYouTubeIframeAPIReady=()=>{
     p=new YT.Player("bgmpYT",{videoId:ID,width:200,height:120,playerVars:{loop:1,playlist:ID,controls:0,playsinline:1,rel:0,disablekb:1},
       events:{onReady:()=>{ready=true;window.__bgmReady=true;p.setVolume(+vol.value);ui();
+                // 인트로 중이면 소리 없이 미리 불러와 둠 → 빛이 터질 때 바로 첫 음이 나오게
+                if(document.body.classList.contains("intro-on")&&!want){pre=true;p.mute();p.playVideo();}
                 if(want)play();},
               onStateChange:e=>{
+                if(pre){ if(e.data===1){p.pauseVideo();p.seekTo(START,true);pre=false;} return; }
+                // 시작 직후 사용자가 멈춘 게 아닌데 멈춰 버리면 다시 재생 (브라우저 정책 대비)
+                if(e.data===2&&!userPaused&&performance.now()-hitT<4000){p.unMute();p.playVideo();return;}
                 if(e.data===1){playing=true;window.__bgmPlaying=true;window.dispatchEvent(new Event("bgm-playing"));}
                 else if(e.data===2||e.data===0){playing=false;window.__bgmPlaying=false;} ui();},
               onError:()=>{st.textContent="ERROR";}}});
   };
   const sc=document.createElement("script");sc.src="https://www.youtube.com/iframe_api";sc.onerror=()=>{st.textContent="OFFLINE"};document.head.appendChild(sc);
-  function play(){ if(!ready){want=true;return;} p.unMute();p.setVolume(+vol.value);p.playVideo(); }
-  function pause(){ if(ready) p.pauseVideo(); want=false; }
+  function play(){ userPaused=false; if(!ready){want=true;return;} p.unMute();p.setVolume(+vol.value);p.playVideo(); }
+  let userPaused=false, hitT=-1e9;
+  function pause(){ userPaused=true; if(ready) p.pauseVideo(); want=false; }
   window.__bgmPlay=play;
-  window.__bgmHit=()=>{ if(!ready){want=true;return;} pre=false; p.seekTo(START,true); p.unMute(); p.setVolume(+vol.value); p.playVideo(); };
+  window.__bgmHit=()=>{ hitT=performance.now(); userPaused=false; if(!ready){want=true;return;} pre=false; p.seekTo(START,true); p.unMute(); p.setVolume(+vol.value); p.playVideo(); };
   document.addEventListener("click",e=>{const t=e.target.closest("[data-bgm-toggle]");if(!t)return;e.preventDefault();e.stopPropagation();playing?pause():play();});
   vol.addEventListener("input",()=>{if(ready)p.setVolume(+vol.value)});
   const mb=document.getElementById("bgmpMin");mb.onclick=()=>{const m=box.classList.toggle("min");mb.innerHTML=m?'<svg viewBox="0 0 10 10"><path d="M6 2L3 5L6 8"/></svg>':'<svg viewBox="0 0 10 10"><path d="M2 5H8"/></svg>';mb.setAttribute("aria-label",m?"펼치기":"접기")};
