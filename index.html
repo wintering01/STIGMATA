@@ -143,40 +143,45 @@ main{position:relative;z-index:2}
 .ost:hover{border-color:var(--line-strong);color:var(--ink)}
 button.ost{cursor:pointer;background:none;font:inherit;font-family:var(--mono);font-size:.72rem}
 .ost.off .eq b{animation-play-state:paused;height:3px}
-/* 미니 플레이어: 검은 바탕 + 재생할 때만 은은하게 번지는 빛 */
-.bgmp{position:fixed;right:18px;bottom:18px;z-index:60;width:262px;border-radius:14px;
+/* 미니 플레이어: 검은 바탕 + 빛 (재생하면 빛이 번지고 윗변을 따라 흐름) */
+.bgmp{position:fixed;right:18px;bottom:18px;z-index:60;width:262px;border-radius:14px;overflow:hidden;
   background:#000;border:1px solid rgba(255,255,255,.08);box-shadow:0 14px 40px -12px rgba(0,0,0,.9);
   font-family:var(--mono);color:#cfd3e6;transition:opacity .5s,border-color .6s,box-shadow .6s}
-.bgmp::before{content:"";position:absolute;left:14%;right:14%;top:-1px;height:1px;pointer-events:none;border-radius:1px;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,.7),transparent);opacity:.25;transition:opacity .8s}
-.bgmp.on{border-color:rgba(255,255,255,.13);box-shadow:0 14px 40px -12px rgba(0,0,0,.9),0 0 36px -16px rgba(230,235,255,.45)}
-.bgmp.on::before{opacity:.85}
+.bgmp.on{border-color:rgba(255,255,255,.14);box-shadow:0 14px 40px -12px rgba(0,0,0,.9),0 0 40px -16px rgba(230,235,255,.45)}
 body.intro-on .bgmp{opacity:0;pointer-events:none}
+/* 버튼 뒤에서 번지는 빛 웅덩이 */
+.bgmp::before{content:"";position:absolute;left:-60px;top:50%;width:220px;height:160px;transform:translateY(-50%);pointer-events:none;
+  background:radial-gradient(closest-side,rgba(235,238,255,.24),rgba(235,238,255,.06) 60%,transparent);opacity:.2;transition:opacity 1s}
+.bgmp.on::before{opacity:1;animation:bgmpBreath 4.5s ease-in-out infinite}
+/* 윗변을 따라 천천히 흐르는 빛 */
+.bgmp::after{content:"";position:absolute;top:0;left:0;width:45%;height:1px;pointer-events:none;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.9),transparent);opacity:0;transform:translateX(-100%)}
+.bgmp.on::after{opacity:1;animation:bgmpSweep 5.5s ease-in-out infinite}
+@keyframes bgmpSweep{0%{transform:translateX(-100%)}100%{transform:translateX(260%)}}
+@keyframes bgmpBreath{50%{opacity:.55}}
+.bgmp>*{position:relative}
 .bgmp-h{position:absolute;top:8px;right:10px;z-index:2}
 .bgmp-h span{display:none}
 .bgmp-min{background:none;border:0;color:rgba(220,225,245,.35);cursor:pointer;width:18px;height:18px;padding:0;display:grid;place-items:center}
 .bgmp-min:hover{color:#fff}
 .bgmp-min svg{width:10px;height:10px;fill:none;stroke:currentColor;stroke-width:1.2;stroke-linecap:round}
 .bgmp-b{display:grid;grid-template-columns:38px 1fr 54px;gap:12px;align-items:center;padding:12px 16px 12px 12px}
-.bgmp-pp{position:relative;width:38px;height:38px;border-radius:50%;border:1px solid rgba(255,255,255,.22);background:#000;color:#fff;cursor:pointer;display:grid;place-items:center;transition:border-color .5s,box-shadow .5s}
+.bgmp-pp{position:relative;width:38px;height:38px;border-radius:50%;border:1px solid rgba(255,255,255,.22);background:#000;color:#fff;cursor:pointer;display:grid;place-items:center;transition:border-color .5s,box-shadow .5s,background .5s}
 .bgmp-pp:hover{border-color:rgba(255,255,255,.5)}
-.bgmp-pp::after{content:"";position:absolute;inset:-14px;border-radius:50%;pointer-events:none;z-index:-1;
-  background:radial-gradient(closest-side,rgba(235,238,255,.22),transparent);opacity:0;transition:opacity .8s}
-.bgmp.on .bgmp-pp{border-color:rgba(255,255,255,.55);box-shadow:0 0 14px -4px rgba(235,238,255,.7)}
-.bgmp.on .bgmp-pp::after{opacity:1;animation:bgmpBreath 4s ease-in-out infinite}
-@keyframes bgmpBreath{50%{opacity:.45}}
-.bgmp-pp .rp{position:absolute;inset:-1px;border-radius:50%;border:1px solid rgba(255,255,255,.4);pointer-events:none;opacity:0}
+.bgmp.on .bgmp-pp{border-color:rgba(255,255,255,.7);background:radial-gradient(circle,rgba(255,255,255,.14),#000 70%);box-shadow:0 0 16px -3px rgba(235,238,255,.75),inset 0 0 8px -2px rgba(255,255,255,.4)}
+.bgmp-pp .rp{position:absolute;inset:-1px;border-radius:50%;border:1px solid rgba(255,255,255,.45);pointer-events:none;opacity:0}
 .bgmp.on .bgmp-pp .rp{animation:bgmpRip 3.6s cubic-bezier(.2,.6,.3,1) infinite}
-.bgmp.on .bgmp-pp .rp+.rp{animation-delay:1.8s}
-.bgmp-pp .rp+.rp+.rp{display:none}
-@keyframes bgmpRip{0%{transform:scale(1);opacity:.6}100%{transform:scale(1.9);opacity:0}}
+.bgmp.on .bgmp-pp .rp+.rp{animation-delay:1.2s}
+.bgmp.on .bgmp-pp .rp+.rp+.rp{animation-delay:2.4s}
+@keyframes bgmpRip{0%{transform:scale(1);opacity:.6}100%{transform:scale(2.1);opacity:0}}
 .bgmp-pp svg{width:10px;height:12px;fill:none;stroke:#fff;stroke-width:1.2;stroke-linejoin:round;stroke-linecap:round}
-.bgmp.on .bgmp-pp svg{filter:drop-shadow(0 0 3px rgba(255,255,255,.8))}
+.bgmp.on .bgmp-pp svg{filter:drop-shadow(0 0 3px rgba(255,255,255,.9))}
 .bgmp-pp .pl{margin-left:2px}
 .bgmp-pp .pa,.bgmp.on .bgmp-pp .pl{display:none}.bgmp.on .bgmp-pp .pa{display:block}
-.bgmp-t{min-width:0;line-height:1.45}.bgmp-t b{display:block;font-weight:400;font-size:.5rem;letter-spacing:.3em;color:rgba(220,225,245,.4);transition:color .6s}
-.bgmp.on .bgmp-t b{color:rgba(255,255,255,.85)}
-.bgmp-t span{display:block;font-family:var(--serif);font-size:.8rem;color:#eef0fa;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bgmp-t{min-width:0;line-height:1.45}.bgmp-t b{display:block;font-weight:400;font-size:.5rem;letter-spacing:.3em;color:rgba(220,225,245,.4);transition:color .6s,text-shadow .6s}
+.bgmp.on .bgmp-t b{color:#fff;text-shadow:0 0 8px rgba(255,255,255,.6)}
+.bgmp-t span{display:block;font-family:var(--serif);font-size:.8rem;color:#eef0fa;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:text-shadow .6s}
+.bgmp.on .bgmp-t span{text-shadow:0 0 12px rgba(235,238,255,.35)}
 .bgmp input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:1px;margin-top:10px;background:linear-gradient(90deg,rgba(255,255,255,.6),rgba(255,255,255,.12));outline:none}
 .bgmp input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:7px;height:7px;border-radius:50%;background:#fff;box-shadow:0 0 6px rgba(255,255,255,.8);cursor:pointer}
 .bgmp input[type=range]::-moz-range-thumb{width:7px;height:7px;border:0;border-radius:50%;background:#fff;box-shadow:0 0 6px rgba(255,255,255,.8);cursor:pointer}
@@ -186,6 +191,7 @@ body.intro-on .bgmp{opacity:0;pointer-events:none}
 .bgmp.min .bgmp-t,.bgmp.min input[type=range]{display:none}
 .bgmp.min .bgmp-b{grid-template-columns:auto;padding:7px 30px 7px 7px}
 .bgmp.min .bgmp-h{top:50%;right:8px;transform:translateY(-50%)}
+.bgmp.min::before{left:-90px}
 @media(max-width:600px){.bgmp{right:10px;bottom:10px;width:236px}.bgmp-b{grid-template-columns:36px 1fr 46px;gap:10px;padding:10px 14px 10px 10px}.bgmp-pp{width:36px;height:36px}}
 button.ost{cursor:pointer;background:none;font:inherit;font-family:var(--mono);font-size:.72rem}
 .ost.off .eq b{animation-play-state:paused;height:3px}
@@ -866,7 +872,7 @@ body:not(.ready) .title-en span,body:not(.ready) .intro{animation-play-state:pau
     <div class="gate intro" style="--d:2.2s">
       <button class="enter" id="enter" aria-label="세계관 소개로 이동"></button>
       <div class="gate-lab">OPEN THE ARCHIVE</div>
-      <button class="ost off" type="button" data-bgm-toggle><span class="eq"><b></b><b></b><b></b></span>Yuki Kajiura — Sis Puella Magica!</button>
+      <button class="ost off" type="button" data-bgm-toggle><span class="eq"><b></b><b></b><b></b></span>Incertus</button>
     </div>
     <div class="scroll-hint intro" style="--d:2.6s">SCROLL ↓</div>
   </div>
@@ -2059,14 +2065,14 @@ $("#replay").onclick=()=>{location.hash=""; location.reload()};
   <div class="bgmp-h"><span>BGM / STIGMATA</span><button type="button" class="bgmp-min" id="bgmpMin" aria-label="접기"><svg viewBox="0 0 10 10"><path d="M2 5H8"/></svg></button></div>
   <div class="bgmp-b">
     <button type="button" class="bgmp-pp" data-bgm-toggle aria-label="재생/정지"><span class="rp"></span><span class="rp"></span><span class="rp"></span><svg class="pl" viewBox="0 0 12 14" aria-hidden="true"><path d="M2.5 1.5 L10.5 7 L2.5 12.5 Z"/></svg><svg class="pa" viewBox="0 0 12 14" aria-hidden="true"><path d="M4 1.5V12.5M8 1.5V12.5"/></svg></button>
-    <div class="bgmp-t"><b id="bgmpSt">READY</b><span>Sis Puella Magica!</span></div>
+    <div class="bgmp-t"><b id="bgmpSt">READY</b><span>Incertus</span></div>
     <input type="range" min="0" max="100" value="40" id="bgmpVol" aria-label="볼륨">
   </div>
   <div class="bgmp-yt"><div id="bgmpYT"></div></div>
 </div>
 <script>
 (()=>{
-  const ID="bzlHPlq8hIs", box=document.getElementById("bgmp"), st=document.getElementById("bgmpSt"), vol=document.getElementById("bgmpVol");
+  const ID="a4-Zuv-MakI", box=document.getElementById("bgmp"), st=document.getElementById("bgmpSt"), vol=document.getElementById("bgmpVol");
   let p=null, ready=false, playing=false, want=false;
   const ui=()=>{box.classList.toggle("on",playing);document.querySelectorAll("[data-bgm-toggle]").forEach(b=>b.classList.toggle("off",!playing));st.textContent=playing?"PLAYING":(ready?"PAUSED":"LOADING")};
   window.onYouTubeIframeAPIReady=()=>{
