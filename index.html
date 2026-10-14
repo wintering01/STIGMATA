@@ -872,7 +872,7 @@ body:not(.ready) .title-en span,body:not(.ready) .intro{animation-play-state:pau
     <div class="gate intro" style="--d:2.2s">
       <button class="enter" id="enter" aria-label="세계관 소개로 이동"></button>
       <div class="gate-lab">OPEN THE ARCHIVE</div>
-      <button class="ost off" type="button" data-bgm-toggle><span class="eq"><b></b><b></b><b></b></span>Incertus</button>
+      
     </div>
     <div class="scroll-hint intro" style="--d:2.6s">SCROLL ↓</div>
   </div>
@@ -1293,14 +1293,14 @@ const CHARACTERS = [
   { name:"알파", en:"Alpha", color:"#e2465a", tagline:"추락한 별의 조각", zone:2, role:"추락한 별의 조각",
     fields:[["나이","??세"],["키","163cm"],["포지션","전 성좌 (현재 격 상실)"],["계약 성좌","인식되지 않음",1],
       ["권능","닿는 모든 것을 빨아들이는 밤하늘 같은 왜곡된 공간을 열어, 자신을 향해 날아오는 마법이나 파멸적인 타격을 흡수한 뒤 궤도를 비틀어 그대로 적에게 반사한다.",1]],
-    desc:["어느 날부터 침식지구에 떠돌기 시작한 쌍둥이 거지 듀오 중 오빠. 그 정체는 격을 잃고 어린아이의 모습으로 인계로 추락한 성좌라는데?! 그들은 다시 성좌로 돌아갈 수 있을까?"],
+    desc:["어느 날부터 침식지구에 떠돌기 시작한 쌍둥이 거지 듀오 중 오빠. 그 정체는 격을 잃고 인간의 모습으로 인계로 추락한 성좌라는데?! 그들은 다시 성좌로 돌아갈 수 있을까?"],
     note:"※ 미성년자와의 NSFW 불가",
     events:["D-58 검은 거래"], image:IMG.alpha, full:IMG.alphaFull },
   { name:"베타", en:"Beta", color:"#3fd08a", tagline:"추락한 별의 조각", zone:2, role:"추락한 별의 조각",
     fields:[["나이","??세"],["키","153cm"],["포지션","전 성좌 (현재 격 상실)"],["계약 성좌","인식되지 않음",1],
       ["권능","허공의 빛을 뭉쳐 물리적인 질량을 가진 마법적 형상을 형상화한다. 반투명한 유리나 보석처럼 빛나는 검, 방패, 혹은 허공을 딛고 뛸 수 있는 별빛 발판 등을 자유롭게 창조할 수 있다.",1]],
     keywords:["#성좌","#메가데레","#성장물"],
-    desc:["어느 날부터 침식지구에 떠돌기 시작한 쌍둥이 거지 듀오 중 여동생. 그 정체는 격을 잃고 어린아이의 모습으로 인계로 추락한 성좌라는데?! 그들은 다시 성좌로 돌아갈 수 있을까?"],
+    desc:["어느 날부터 침식지구에 떠돌기 시작한 쌍둥이 거지 듀오 중 여동생. 그 정체는 격을 잃고 인간의 모습으로 인계로 추락한 성좌라는데?! 그들은 다시 성좌로 돌아갈 수 있을까?"],
     note:"※ 미성년자와의 NSFW 불가",
     events:["D-58 검은 거래"], image:IMG.beta, full:IMG.betaFull },
 ];
@@ -1703,12 +1703,12 @@ window.__sceneT=performance.now();   // 배경 장면(빛기둥·소용돌이)�
   });
   intro.addEventListener("pointerleave",()=>{window.__hov=0});
   function burst(){
+    if(window.__bgmHit) window.__bgmHit();   // 빛이 터지는 순간 곡의 첫 종소리가 울리게
     window.__hov=0; window.__burstT=performance.now(); window.__warp=1.4;
     setTimeout(()=>{document.body.classList.remove("intro-on");ready();intro.remove()},260);
   }
   function open(){
     if(done) return; done=true;
-    if(window.__bgmPlay) window.__bgmPlay();
     // 빛줄기가 아직 내려오는 중이면, 빠르게 감아서 착지시킨 뒤에 터뜨림
     const LAND=1.8, el=(performance.now()-window.__sceneT)/1000;
     if(el>=LAND){ burst(); return; }
@@ -2073,18 +2073,25 @@ $("#replay").onclick=()=>{location.hash=""; location.reload()};
 <script>
 (()=>{
   const ID="a4-Zuv-MakI", box=document.getElementById("bgmp"), st=document.getElementById("bgmpSt"), vol=document.getElementById("bgmpVol");
-  let p=null, ready=false, playing=false, want=false;
+  const START=0;   // 곡 첫 종소리 위치(초). 앞에 무음이 있으면 여기 숫자를 늘리면 됨
+  let p=null, ready=false, playing=false, want=false, pre=false;
   const ui=()=>{box.classList.toggle("on",playing);document.querySelectorAll("[data-bgm-toggle]").forEach(b=>b.classList.toggle("off",!playing));st.textContent=playing?"PLAYING":(ready?"PAUSED":"LOADING")};
   window.onYouTubeIframeAPIReady=()=>{
     p=new YT.Player("bgmpYT",{videoId:ID,width:200,height:120,playerVars:{loop:1,playlist:ID,controls:0,playsinline:1,rel:0,disablekb:1},
-      events:{onReady:()=>{ready=true;p.setVolume(+vol.value);ui();if(want)play();},
-              onStateChange:e=>{if(e.data===1)playing=true;else if(e.data===2||e.data===0)playing=false;ui();},
+      events:{onReady:()=>{ready=true;p.setVolume(+vol.value);ui();
+                // 인트로 중이면 소리 없이 미리 불러와 둠 → 빛이 터질 때 바로 첫 음이 나오게
+                if(document.body.classList.contains("intro-on")&&!want){pre=true;p.mute();p.playVideo();}
+                if(want)play();},
+              onStateChange:e=>{
+                if(pre){ if(e.data===1){p.pauseVideo();p.seekTo(START,true);pre=false;} return; }
+                if(e.data===1)playing=true;else if(e.data===2||e.data===0)playing=false;ui();},
               onError:()=>{st.textContent="ERROR";}}});
   };
   const sc=document.createElement("script");sc.src="https://www.youtube.com/iframe_api";sc.onerror=()=>{st.textContent="OFFLINE"};document.head.appendChild(sc);
   function play(){ if(!ready){want=true;return;} p.unMute();p.setVolume(+vol.value);p.playVideo(); }
   function pause(){ if(ready) p.pauseVideo(); want=false; }
   window.__bgmPlay=play;
+  window.__bgmHit=()=>{ if(!ready){want=true;return;} pre=false; p.seekTo(START,true); p.unMute(); p.setVolume(+vol.value); p.playVideo(); };
   document.addEventListener("click",e=>{const t=e.target.closest("[data-bgm-toggle]");if(!t)return;e.preventDefault();e.stopPropagation();playing?pause():play();});
   vol.addEventListener("input",()=>{if(ready)p.setVolume(+vol.value)});
   const mb=document.getElementById("bgmpMin");mb.onclick=()=>{const m=box.classList.toggle("min");mb.innerHTML=m?'<svg viewBox="0 0 10 10"><path d="M6 2L3 5L6 8"/></svg>':'<svg viewBox="0 0 10 10"><path d="M2 5H8"/></svg>';mb.setAttribute("aria-label",m?"펼치기":"접기")};
