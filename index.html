@@ -1778,14 +1778,18 @@ window.__sceneT=performance.now();   // 배경 장면(빛기둥·소용돌이)�
     if(done) return; done=true;
     // 누르는 그 순간(사용자 동작 안)에 재생 → 아이폰에서도 자동으로 나옴. 첫 종소리는 빛이 터질 때쯤 도착
     if(window.__bgmHit) window.__bgmHit();
+    // 미리 불러둔 곡이 실제로 소리 나기 시작하는 순간에 맞춰 빛을 터뜨림 (최대 1.2초까지만 기다림)
+    let fired=false; const go=()=>{ if(fired) return; fired=true; window.removeEventListener("bgm-playing",late); burst(); };
+    const late=()=>setTimeout(go,120);
+    const sync=()=>{ if(window.__bgmReady&&!window.__bgmPlaying){ window.addEventListener("bgm-playing",late); setTimeout(go,1200); } else go(); };
     // 빛줄기가 아직 내려오는 중이면, 빠르게 감아서 착지시킨 뒤에 터뜨림
     const LAND=1.8, el=(performance.now()-window.__sceneT)/1000;
-    if(el>=LAND){ burst(); return; }
+    if(el>=LAND){ sync(); return; }
     const need=LAND-el, dur=Math.min(.55,.25+need*.15)*1000, t0=performance.now(), s0=window.__sceneT;
     (function ff(){
       const k=Math.min(1,(performance.now()-t0)/dur), e=1-Math.pow(1-k,2);
       window.__sceneT=s0-need*1000*e;
-      if(k<1) requestAnimationFrame(ff); else burst();
+      if(k<1) requestAnimationFrame(ff); else sync();
     })();
   }
   intro.addEventListener("click",open);
@@ -2142,7 +2146,7 @@ $("#replay").onclick=()=>{location.hash=""; location.reload()};
 <script>
 (()=>{
   const ID="a4-Zuv-MakI", box=document.getElementById("bgmp"), st=document.getElementById("bgmpSt"), vol=document.getElementById("bgmpVol");
-  const START=1;   // 곡 첫 종소리 위치(초). 앞에 무음이 있으면 여기 숫자를 늘리면 됨
+  const START=0;   // 곡 첫 종소리 위치(초) — 곡은 시작하자마자 종소리라 0. 앞에 무음이 있으면 여기 숫자를 늘리면 됨
   let p=null, ready=false, playing=false, want=false, pre=false;
   const ui=()=>{box.classList.toggle("on",playing);document.querySelectorAll("[data-bgm-toggle]").forEach(b=>b.classList.toggle("off",!playing));st.textContent=playing?"PLAYING":(ready?"PAUSED":"LOADING")};
   window.onYouTubeIframeAPIReady=()=>{
