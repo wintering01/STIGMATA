@@ -440,6 +440,20 @@ details.fold.sec{padding:0}
 .evsel p{font-size:.8rem;color:var(--dim);margin:12px 0 0}
 .evpick:not(.picked) .av{opacity:.9}
 .chron.shut{display:none}
+/* 미공개(봉인된) 개인챗 */
+.evpick button.sealed .av img{filter:grayscale(1) brightness(.3) contrast(1.2) blur(.6px)}
+.evpick button.sealed .av::after{content:"";position:absolute;inset:0;border-radius:50%;background:repeating-linear-gradient(0deg,rgba(255,255,255,.05) 0 1px,transparent 1px 3px)}
+.evpick button.sealed .nm{color:rgba(255,255,255,.28);letter-spacing:.12em}
+.evpick button.sealed .av,.evpick button.sealed .av.duo i{border-color:rgba(255,255,255,.12);background:#000}
+.evpick button.sealed.on .av:not(.duo),.evpick button.sealed.on .av.duo i{border-color:rgba(255,255,255,.5);box-shadow:0 0 0 2px #000,0 0 14px -3px rgba(255,255,255,.4)}
+.evpick button.sealed.on .nm{color:rgba(255,255,255,.6)}
+.evsealed{margin-top:22px;padding:46px 20px 42px;text-align:center;border:1px solid rgba(255,255,255,.07);background:radial-gradient(60% 120% at 50% 0%,rgba(255,255,255,.05),transparent 70%),#000;position:relative;overflow:hidden}
+.evsealed::before{content:"";position:absolute;left:20%;right:20%;top:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.6),transparent)}
+.evsealed.in{animation:chronIn .6s ease}
+.evsealed .sg{display:block;width:14px;height:14px;margin:0 auto 18px;background:#fff;clip-path:polygon(50% 0,58% 42%,100% 50%,58% 58%,50% 100%,42% 58%,0 50%,42% 42%);filter:drop-shadow(0 0 6px #fff);animation:sealPulse 3.2s ease-in-out infinite}
+@keyframes sealPulse{0%,100%{opacity:.25;transform:scale(.85)}50%{opacity:.9;transform:scale(1)}}
+.evsealed b{display:block;font-family:var(--mono);font-weight:400;font-size:.66rem;letter-spacing:.42em;color:rgba(255,255,255,.75)}
+.evsealed p{font-size:.82rem;color:var(--dim);margin-top:10px}
 .chron{animation:chronIn .5s ease}
 @keyframes chronIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
 .ev .d.s1{font-size:1.15rem}
@@ -1475,6 +1489,7 @@ function show(id){
   $$("#side .ss").forEach(b=>b.classList.toggle("on",b.dataset.go===subOn||(!r.fold&&!r.tab&&b.dataset.go===pid)));
   document.body.classList.toggle("sub",pid!=="home");
   // 접은 글이면 펼치고 그 자리로
+  $$("details.fold").forEach(d=>{ if(d.id!==r.fold) d.open=false; });   // 접은 글은 기본적으로 접힌 상태
   if(r.fold){ const f=document.getElementById(r.fold); f.open=true; requestAnimationFrame(()=>f.scrollIntoView({behavior:changed?"auto":"smooth"})); }
   else if(changed||r.tab||ALIAS[id]===undefined) scrollTo(0,0);
   dispatchEvent(new Event("resize"));
@@ -1627,19 +1642,28 @@ renderChars();
   const S1M={obs:""};
   const keep={};["obs","gala"].forEach(k=>{const e=byK(k);keep[k]={p:e.querySelector(".b p").innerHTML,m:(e.querySelector(".b .mark")||{}).outerHTML||""};});
   const COMMON=["obs","gala","auction","acad","reso"];
+  const RELEASED=["헥스"];   // 개인챗이 공개된 캐릭터 (여기에 이름을 추가하면 열림)
+  const sealedOf=c=>c&&!RELEASED.includes(c.name)&&!(c.name==="알파"&&RELEASED.includes("베타"));
+  const sealBox=document.createElement("div"); sealBox.className="evsealed"; sealBox.hidden=true;
+  sealBox.innerHTML=`<i class="sg"></i><b>OBSERVATION PENDING</b><p>아직 관측되지 않은 기록입니다.</p>`;
+  chron.parentNode.insertBefore(sealBox,chron);
   const special=c=>{const ev=(c.events||[]).join(" ");const r=[];if(ev.includes("????"))r.push("rite");if(ev.includes("성인강림"))r.push("descent");return r;};
   const star=`<svg viewBox="0 0 20 20"><path d="M10 0 L11.6 8.4 L20 10 L11.6 11.6 L10 20 L8.4 11.6 L0 10 L8.4 8.4Z"/></svg>`;
   sel.innerHTML=`<button type="button" role="tab" data-v="multi" style="--cc:#fff"><span class="av all">${star}</span><span class="nm">STIGMATA</span></button>`
     +CHARACTERS.map((c,i)=>{
       if(!c.image||c.name==="베타") return "";
       if(c.name==="알파"){const b=CHARACTERS.find(x=>x.name==="베타");   // 알파·베타는 한 챗
-        return `<button type="button" role="tab" data-v="${i}" style="--cc:${c.color}"><span class="av duo"><i><img src="${c.image}" alt=""></i><i style="--cc:${b.color}"><img src="${b.image}" alt=""></i></span><span class="nm">알파·베타</span></button>`;}
-      return `<button type="button" role="tab" data-v="${i}" style="--cc:${c.color||"#fff"}"><span class="av"><img src="${c.image}" alt=""></span><span class="nm">${esc(c.name.replace(/^이리키인 /,""))}</span></button>`;}).join("");
+        return `<button type="button" role="tab" data-v="${i}" class="${sealedOf(c)?"sealed":""}" style="--cc:${c.color}"><span class="av duo"><i><img src="${c.image}" alt=""></i><i style="--cc:${b.color}"><img src="${b.image}" alt=""></i></span><span class="nm">알파·베타</span></button>`;}
+      return `<button type="button" role="tab" data-v="${i}" class="${sealedOf(c)?"sealed":""}" style="--cc:${c.color||"#fff"}"><span class="av"><img src="${c.image}" alt=""></span><span class="nm">${esc(c.name.replace(/^이리키인 /,""))}</span></button>`;}).join("");
   let cur=null;
   const GUIDE="이벤트 일정을 확인할 캐릭터를 선택하세요.";
-  function close(){cur=null;chron.classList.add("shut");sel.classList.remove("picked");sel.querySelectorAll("button").forEach(b=>{b.classList.remove("on");b.setAttribute("aria-selected","false")});$("#evNote").textContent=GUIDE;}
+  function close(){cur=null;chron.classList.add("shut");sealBox.hidden=true;sel.classList.remove("picked");sel.querySelectorAll("button").forEach(b=>{b.classList.remove("on");b.setAttribute("aria-selected","false")});$("#evNote").textContent=GUIDE;}
   function show(v){
-    if(cur===String(v)){close();return;} cur=String(v); chron.classList.remove("shut"); sel.classList.add("picked");
+    if(cur===String(v)){close();return;} cur=String(v); sel.classList.add("picked");
+    const sealed=v!=="multi"&&sealedOf(CHARACTERS[+v]);
+    sel.querySelectorAll("button").forEach(b=>{const on=b.dataset.v===String(v);b.classList.toggle("on",on);b.setAttribute("aria-selected",on)});
+    chron.classList.toggle("shut",sealed); sealBox.hidden=!sealed;
+    if(sealed){ $("#evNote").textContent=""; sealBox.style.setProperty("--cc",CHARACTERS[+v].color||"#fff"); sealBox.classList.remove("in"); void sealBox.offsetWidth; sealBox.classList.add("in"); return; }
     const multi=v==="multi", c=multi?null:CHARACTERS[+v];
     const list=multi?KEYS:[...COMMON,...special(c)];
     evs.forEach(e=>{const k=e.dataset.k, on=list.includes(k); e.style.display=on?"":"none"; if(!on) return;
