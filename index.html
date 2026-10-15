@@ -138,7 +138,10 @@ main{position:relative;z-index:2}
 .gate{margin-top:auto;margin-bottom:4vh;display:flex;flex-direction:column;align-items:center;gap:14px}
 .enter{width:96px;height:96px;border-radius:50%;outline-offset:6px}
 .enter:focus-visible{outline:1px solid var(--accent)}
-.gate-lab{font-family:var(--mono);font-size:.66rem;letter-spacing:.45em;color:var(--soft);padding-left:.45em;text-shadow:0 0 10px #000}
+.gate-lab{font-family:var(--mono);font-size:.62rem;letter-spacing:.45em;color:var(--soft);padding-left:.45em;text-shadow:0 0 10px #000,0 0 4px #000;display:flex;flex-direction:column;align-items:center;gap:10px}
+.gate-lab::after{content:"";width:1px;height:22px;background:linear-gradient(180deg,rgba(255,255,255,.55),transparent);animation:gateHint 2.4s ease-in-out infinite}
+@keyframes gateHint{0%,100%{transform:scaleY(.4);transform-origin:top;opacity:.4}50%{transform:scaleY(1);opacity:1}}
+@media(min-width:900px){.gate{margin-bottom:8vh;gap:30px}.gate-lab::after{display:none}}
 .ost{margin-top:6px;font-family:var(--mono);font-size:.72rem;color:var(--dim);letter-spacing:.08em;text-decoration:none;display:inline-flex;gap:8px;align-items:center;border:1px solid var(--line);padding:6px 14px;border-radius:999px;transition:border-color .3s,color .3s}
 .ost:hover{border-color:var(--line-strong);color:var(--ink)}
 button.ost{cursor:pointer;background:none;font:inherit;font-family:var(--mono);font-size:.72rem}
@@ -916,9 +919,9 @@ body:not(.ready) .title-en span,body:not(.ready) .intro{animation-play-state:pau
 
   <!-- ② 둘러보기 -->
   <div class="block">
-    <div class="index-head"><h2>EXPLORE</h2><span>처음 오셨다면 순서대로 읽어 보세요</span></div>
+    <div class="index-head"><h2>EXPLORE</h2></div>
     <div class="tour" id="route"></div>
-    <p class="tour-note"><span class="badge">다인챗 한정</span> 표시가 붙은 내용은 다인챗에만 적용됩니다. 모르는 단어는 <button class="kwl" data-go="glossary">용어 사전</button>에서 찾아보실 수 있습니다.</p>
+    <p class="tour-note"><span class="badge">STIGMATA</span> 표시가 붙은 내용은 다인챗에만 적용됩니다. 모르는 단어는 <button class="kwl" data-go="glossary">용어 사전</button>에서 찾아보실 수 있습니다.</p>
   </div>
 </section>
 
@@ -1137,7 +1140,7 @@ body:not(.ready) .title-en span,body:not(.ready) .intro{animation-play-state:pau
             <div class="places"><div><b>백야대로</b>통합 천문원과 행정 본국을 잇는 거대한 통제 도로.</div><div><b>영현로</b>'영원한 현재'라는 뜻을 지닌 최고위층의 고급 주택가.</div></div></div></div>
         <div class="zone" data-c="1"><div class="zl"><div class="cls">CLASS 1</div><div class="zn">안정지구</div><div class="ins"><div class="lab">INSTABILITY · LOW</div><div class="track"><i style="width:22%"></i></div></div></div>
           <div class="zr"><p>일반 시민 대다수가 거주하는 거대 메가시티 구역이다.</p><p>미세한 불안정도가 존재하지만 방벽과 정화 장치를 통해 일상생활이 가능하다. 상업 시설과 관공서가 밀집해 있으며, 기현상 발생에 대비한 감시 장비가 거리 곳곳에 설치되어 있다.</p>
-            <div class="places"><div><b>은성거리</b>밤에도 화려하게 빛나는 최대 번화가이자 상업 구역.</div><div><b>주시광장</b>통제실의 감시를 받는 중앙 광장이자 주요 집회 통제 구역.</div></div></div></div>
+            <div class="places"><div><b>은성거리</b>밤에도 화려하게 빛나는 최대 번화가이자 상업 구역.</div><div><b>주시광장</b>통제실의 감시를 받는 중앙 광장이자 주요 집회 통제 구역.</div><div><b>성해문 본당</b>수많은 시민이 예배를 드리는 성해문의 거대한 본당.</div></div></div></div>
         <div class="zone" data-c="2"><div class="zl"><div class="cls">CLASS 2</div><div class="zn">침식지구</div><div class="ins"><div class="lab">INSTABILITY · CRITICAL</div><div class="track"><i style="width:68%"></i></div></div></div>
           <div class="zr"><p>불안정도가 임계점을 넘어 세계의 법칙이 갉아먹히고 있는 최전선 구역이다.</p><p>일반 시민은 대부분 대피했으며, 현장 투입 인력과 무장 부대가 대기소를 세우고 활동한다. 무너지는 건축물, 폐허, 군사 요새가 뒤섞여 있다.</p><p>안정지구에서 밀려난 빈민, 추방자, 범법자들이 흘러들어와 비공식 정착지를 형성하기도 한다.</p>
             <div class="places"><div><b>최전선로</b>침식 확산을 막기 위해 병력이 배치된 최위험 경계선.</div><div><b>낙화거리</b>무너지는 폐허 사이에 형성된 임시 보급로.</div><div><b>낙성채성</b>성좌의 잔해가 추락한 자리에 형성된 거대 무법도시.</div></div></div></div>
@@ -1164,7 +1167,6 @@ body:not(.ready) .title-en span,body:not(.ready) .intro{animation-play-state:pau
         <p>도시 곳곳에는 아직도 별의 잔해가 묻혀 있다. 그것이 성좌의 유해인지, 권능의 파편인지, 인간이 감당할 수 없는 재앙인지는 누구도 단정하지 못한다.</p>
         <div class="children">
           <div class="child"><h4>천쇄회<small>天鎖會</small></h4><p>화신을 사냥하고 권능을 거래하는 낙성채성의 실질적 지배 세력이다. 암살, 밀수, 인신매매, 불법 권능 거래를 장악한 가장 오래된 범죄조직으로 알려져 있다.</p></div>
-          <div class="child"><h4>성해문<small>星骸門</small></h4><p>별의 유해와 낙성의 힘을 신앙처럼 숭배하는 종교 조직이다. 성좌와 별의 잔해를 인류를 초월할 수 있는 신성한 매개로 여기며, 교단 내부에서는 강림과 구원을 위한 여러 의식을 비밀리에 이어오고 있다.</p></div>
         </div>
       </div>
     </div>
@@ -1182,8 +1184,7 @@ body:not(.ready) .title-en span,body:not(.ready) .intro{animation-play-state:pau
         </div>
         <h5>이면</h5>
         <p>천문원은 완전한 구원자가 아니다.</p>
-        <p>세계를 유지한다는 명목 아래 극단적인 관료주의를 유지하며, 불안정도가 치솟은 구역은 가차 없이 관측을 끊고 버린다. 성해문과 천쇄회가 낙성채성에서 벌이는 불법 강림 의식과 권능 거래도 완전히 통제하지 못한다.</p>
-        <p>또한 세계의 시간을 되돌린 <b>회귀 권능</b> <span class="badge">다인챗 한정</span>의 정체, 발동자, 트리거 조건 역시 천문원의 관측망으로 해독하지 못한 미지의 영역으로 남아 있다.</p>
+        <p>세계를 유지한다는 명목 아래 극단적인 관료주의를 유지하며, 불안정도가 치솟은 구역은 가차 없이 관측을 끊고 버린다. 낙성채성에서 벌어지는 천쇄회의 불법 권능 거래도 완전히 통제하지 못한다.</p>
       </div>
     </div>
 
@@ -1193,6 +1194,14 @@ body:not(.ready) .title-en span,body:not(.ready) .intro{animation-play-state:pau
         <p>이리키인 가문은 혈통을 무엇보다 중요하게 여기며, 후계자 교육 또한 극도로 엄격하기로 알려져 있다. 예법과 교양은 물론, 권능 운용과 성좌학, 정치, 협상술까지 어릴 적부터 철저히 교육받는다. 가문의 사람들은 대체로 품위 있고 절제된 언행을 보이며, 대외적으로도 훌륭한 명성과 신망을 유지하고 있다.</p>
         <p>그러나 가문의 내부는 철저한 비밀주의로 운영된다. 외부인은 본가에 출입하는 것조차 거의 허용되지 않으며, 역대 가주와 직계 혈족에 관한 기록 또한 대부분 공개되어 있지 않다. 이상하리만치 긴 역사를 지녔음에도 내부 사정이 거의 알려져 있지 않아, 천문원 내부에서도 이리키인 가문을 <span class="hl">'가장 베일에 싸인 명문'</span> 중 하나로 분류한다.</p>
         <p>일각에서는 <b>이리키인 가문의 역사가 지나치게 오래 이어지고 있다는 점</b>, <b>역대 가주들의 행적이 비정상적으로 단절되어 있다는 점</b> 등을 이유로 여러 소문이 떠돌고 있지만, 이를 입증할 만한 기록은 존재하지 않는다.</p>
+      </div>
+    </div>
+
+    <div class="sec" id="f-4" data-t="성해문"><h2><span class="no">§ 9-4</span>성해문<span class="en">星骸門</span></h2>
+      <div class="fac"><div class="hanja">星骸門</div><div class="kind">SANCTIONED FAITH · CLASS 1</div>
+        <div class="quote" style="margin-top:8px">떨어진 별은 죽은 것이 아니다. 다시 내려올 날을 기다릴 뿐.</div>
+        <p>별의 유해와 낙성의 힘을 신앙처럼 숭배하는 <b>종교 조직</b>이다. 성좌와 별의 잔해를 인류를 초월할 수 있는 신성한 매개로 여긴다.</p>
+        <p>본당은 <b>안정지구</b> 한가운데에 있다. 천문원의 공인을 받은 합법 종교로, 수많은 일반 시민이 신도로서 예배에 참석한다. 거대한 신도 수와 그에 따른 정치적 영향력 때문에 천문원조차 함부로 손대지 못한다.</p>
       </div>
     </div>
   </div></div></div>
@@ -1224,13 +1233,18 @@ body:not(.ready) .title-en span,body:not(.ready) .intro{animation-play-state:pau
         <ul class="dots"><li>지난 1년간의 세계 불안정도</li><li>지구 등급 변동 및 행정 구역 재편</li><li>성역 발생 현황</li><li>성흔과 화신 관련 통계</li><li>천문원의 향후 대응 정책</li></ul></div>
       <p>대관측에서 발표되는 결과는 향후 1년간 세계의 방향을 결정한다. 때문에 대관측은 <span class="hl">'세계의 방향을 결정하는 날'</span>이라 불린다.</p>
       <p>행사 당일 전 세계의 관측 장비와 천문 시설이 동시에 가동되며, 모든 관측 기록이 중앙 천문원으로 집결한다.</p>
-      <p><span class="badge">다인챗 한정</span></p><p style="margin-top:.6em">그러나 D-129의 대관측에서는 인류 역사상 단 한 번도 기록된 적 없는 결과가 도출된다.</p>
+      <details class="fold" id="c-doom" style="margin-top:26px">
+      <summary class="fold-sum"><span class="fs-no">STIGMATA</span><span class="fs-t">D-129, 그날의 관측<em>Observation Result</em></span><span class="fs-l">STIGMATA에서만 일어나는 대관측의 결과.</span><span class="fs-a"><span class="o">펼쳐 보기</span><span class="c">접기</span> <i>▾</i></span></summary>
+      <div class="fold-body">
+      <p>그러나 D-129의 대관측에서는 인류 역사상 단 한 번도 기록된 적 없는 결과가 도출된다.</p>
       <div class="box" style="margin:22px 0;text-align:center;padding:34px 20px;border-color:rgba(189,182,255,.4)">
         <div style="font-family:var(--mono);font-size:.66rem;letter-spacing:.35em;color:var(--dim)">OBSERVATION RESULT</div>
         <div style="font-family:var(--serif);font-size:clamp(1.4rem,4vw,2rem);margin-top:8px;color:#fff">세계 멸망까지 <span style="color:var(--accent)">130일</span></div>
       </div>
       <p>처음에는 장비 오류로 여겨졌다. 그러나 전 세계 모든 관측 기관이 동일한 결과를 반복해서 확인했고, 수차례 재관측을 거쳐도 수치는 변하지 않았다.</p>
       <p>결국 천문원은 종말의 관측 결과를 공식 발표하고, 세계는 역사상 처음으로 <b>멸망이 예고된 시대</b>에 진입한다.</p>
+      </div>
+      </details>
     </div>
 
     <div class="sec" id="c-2" data-t="이벤트 일정"><h2><span class="no">§ 11</span>이벤트 일정</h2>
@@ -1328,17 +1342,17 @@ const CHARACTERS = [
     keywords:["#쿨데레","#(유사) 미망인","#순애"],
     desc:["독립 화신. 천문원도, 성해문도, 어느 세력에도 속하지 않은 채 홀로 성좌와 영혼을 연구하며 세계를 떠돈다. 유난히 죽음과 관련된 사건에 집착하는 그는, 오늘도 누구도 이해하지 못하는 무언가를 찾고 있는 듯한데…"],
     events:["D-58 검은 거래"], image:IMG.ysy, full:IMG.ysyFull, floor:"bottom:1.5%" },
-  { name:"알파", en:"Alpha", color:"#e2465a", tagline:"추락한 별의 조각", zone:2, role:"추락한 별의 조각",
+  { name:"알파", en:"Alpha", color:"#e2465a", tagline:"추락한 별의 조각", zone:1, area:"성해문 본당", role:"추락한 별의 조각",
     fields:[["나이","??세"],["키","163cm"],["포지션","전 성좌 (현재 격 상실)"],["계약 성좌","인식되지 않음",1],
       ["권능","닿는 모든 것을 빨아들이는 밤하늘 같은 왜곡된 공간을 열어, 자신을 향해 날아오는 마법이나 파멸적인 타격을 흡수한 뒤 궤도를 비틀어 그대로 적에게 반사한다.",1]],
-    desc:["어느 날부터 침식지구에 떠돌기 시작한 쌍둥이 거지 듀오 중 오빠. 그 정체는 격을 잃고 인간의 모습으로 인계로 추락한 성좌라는데?! 그들은 다시 성좌로 돌아갈 수 있을까?"],
+    desc:["어느 날부터 침식지구를 떠돌던 쌍둥이 거지 듀오 중 오빠. 성해문의 눈에 띄어 '신의 사자'로 추앙받았고, 그대로 본당에 모셔져 교단의 상징이 되었다. 그 정체는 격을 잃고 인간의 모습으로 인계로 추락한 성좌라는데?! 그들은 다시 성좌로 돌아갈 수 있을까?"],
     note:"※ 미성년자와의 NSFW 불가",
     events:["D-58 검은 거래"], image:IMG.alpha, full:IMG.alphaFull },
-  { name:"베타", en:"Beta", color:"#3fd08a", tagline:"추락한 별의 조각", zone:2, role:"추락한 별의 조각",
+  { name:"베타", en:"Beta", color:"#3fd08a", tagline:"추락한 별의 조각", zone:1, area:"성해문 본당", role:"추락한 별의 조각",
     fields:[["나이","??세"],["키","153cm"],["포지션","전 성좌 (현재 격 상실)"],["계약 성좌","인식되지 않음",1],
       ["권능","허공의 빛을 뭉쳐 물리적인 질량을 가진 마법적 형상을 형상화한다. 반투명한 유리나 보석처럼 빛나는 검, 방패, 혹은 허공을 딛고 뛸 수 있는 별빛 발판 등을 자유롭게 창조할 수 있다.",1]],
     keywords:["#성좌","#메가데레","#성장물"],
-    desc:["어느 날부터 침식지구에 떠돌기 시작한 쌍둥이 거지 듀오 중 여동생. 그 정체는 격을 잃고 인간의 모습으로 인계로 추락한 성좌라는데?! 그들은 다시 성좌로 돌아갈 수 있을까?"],
+    desc:["어느 날부터 침식지구를 떠돌던 쌍둥이 거지 듀오 중 여동생. 성해문의 눈에 띄어 '신의 사자'로 추앙받았고, 그대로 본당에 모셔져 교단의 상징이 되었다. 그 정체는 격을 잃고 인간의 모습으로 인계로 추락한 성좌라는데?! 그들은 다시 성좌로 돌아갈 수 있을까?"],
     note:"※ 미성년자와의 NSFW 불가",
     events:["D-58 검은 거래"], image:IMG.beta, full:IMG.betaFull },
 ];
@@ -1346,7 +1360,7 @@ const CHARACTERS = [
 /* 지도의 거점: 인물의 area 값이 거점 이름과 같으면 지도에서 그 거점 옆에 표시돼요 (각도는 지도 위 위치, 0=오른쪽 / -90=위) */
 const PLACES = {
   0:[["백야대로",-150],["영현로",-30]],
-  1:[["은성거리",-35],["주시광장",150]],
+  1:[["은성거리",-35],["주시광장",150],["성해문 본당",108]],
   2:[["최전선로",-150],["낙화거리",15],["낙성채성",105]],
   3:[["백지선",-65],["무영로",-175],["성역",55]],
 };
@@ -1354,7 +1368,7 @@ const PLACES = {
 /* 구역 정보 */
 const ZONES = {
   0:{ k:"보존지구", en:"PRESERVED", cls:"CLASS 0", places:"백야대로 · 영현로", line:"불안정도가 0에 수렴하는 최상위 안전 구역. 일반 시민은 평생 들어가지 못하는 백야의 땅." },
-  1:{ k:"안정지구", en:"STABLE",    cls:"CLASS 1", places:"은성거리 · 주시광장", line:"일반 시민 대다수가 살아가는 거대 메가시티. 감시의 눈 아래 꺼지지 않는 불빛." },
+  1:{ k:"안정지구", en:"STABLE",    cls:"CLASS 1", places:"은성거리 · 주시광장 · 성해문 본당", line:"일반 시민 대다수가 살아가는 거대 메가시티. 감시의 눈 아래 꺼지지 않는 불빛." },
   2:{ k:"침식지구", en:"EROSION",   cls:"CLASS 2", places:"최전선로 · 낙화거리 · 낙성채성", line:"세계의 법칙이 갉아먹히고 있는 최전선. 세상이 버린 이들이 흘러드는 곳." },
   3:{ k:"절결지구", en:"SEVERED",   cls:"CLASS 3", places:"백지선 · 무영로 · 성역", line:"정부와 천문원이 통제를 포기한 멸망 구역. 세계가 하얗게 지워진 자리." },
   x:{ k:"미분류",   en:"UNOBSERVED",cls:"UNKNOWN", places:"", line:"아직 관측 구역이 기록되지 않은 인물." },
@@ -1379,7 +1393,7 @@ const TERMS = [
   ["통합 천문원","INSTITUTE","세계를 관측하고 생존권을 유지하는 최고 권력 기관","factions"],
   ["낙성채성","落星寨城","성좌의 잔해가 추락한 자리에 형성된 거대 무법도시","factions"],
   ["천쇄회","天鎖會","낙성채성의 권능 거래 · 밀수 · 암살 조직","factions"],
-  ["성해문","星骸門","별의 유해와 강림을 숭배하는 종교 조직","factions"],
+  ["성해문","星骸門","안정지구에 본당을 둔 별의 유해 숭배 종교","factions"],
   ["이리키인 가문","入来院","가장 베일에 싸인 명문 화신 가문","factions"],
   ["대관측","大觀測","전 세계의 관측 결과를 집계하는 연례 공식 행사","chronicle"],
   ["D-0","DOOMSDAY","관측상 세계가 멸망하는 날","chronicle"],
@@ -1397,7 +1411,7 @@ const PAGES = [   /* 이 순서가 곧 추천 읽기 순서예요 */
 const ALIAS = {
   sanctum:    { page:"world",     fold:"w-sanctum", k:"성역",        d:"현실이 되지 못한 가능성의 공간" },
   descent:    { page:"world",     fold:"w-descent", k:"성좌 강림",    d:"현신과 싱크" },
-  factions:   { page:"zones",     tab:"factions",   k:"지역 · 세력",  d:"낙성채성 · 천문원 · 이리키인" },
+  factions:   { page:"zones",     tab:"factions",   k:"지역 · 세력",  d:"낙성채성 · 천문원 · 이리키인 · 성해문" },
 };
 const SUBS = {   /* 메뉴에 함께 보여줄 하위 항목 */
   world:     [["world","세계관 기본"],["sanctum","성역"],["descent","성좌 강림"]],
