@@ -953,6 +953,25 @@ body:not(.ready) .title-en span,body:not(.ready) .intro{animation-play-state:pau
 .tldr b{color:#fff;font-weight:600}
 .sec.sanct{padding:0;border:0}
 .sanct-body>.sec:first-child{padding-top:56px}
+.tip-term{border-bottom:1px dotted rgba(189,182,255,.75);cursor:help;transition:color .2s,border-color .2s}
+.tip-term:hover,.tip-term:focus-visible,.tip-term.on{color:#fff;border-bottom-color:#fff;outline:none}
+#tip{position:fixed;z-index:300;left:0;top:0;width:min(300px,calc(100vw - 24px));display:grid;grid-template-columns:40px 1fr;gap:12px;padding:14px 16px 14px 14px;text-align:left;background:rgba(8,8,14,.96);border:1px solid rgba(255,255,255,.14);box-shadow:0 14px 40px -10px rgba(0,0,0,.9),0 0 30px -14px rgba(189,182,255,.5);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);opacity:0;visibility:hidden;transform:translateY(4px);transition:opacity .18s,transform .18s,visibility 0s .18s;pointer-events:none}
+#tip.on{opacity:1;visibility:visible;transform:none;transition:opacity .18s,transform .18s;pointer-events:auto}
+#tip::before{content:"";position:absolute;top:-1px;left:14px;width:40px;height:1px;background:var(--accent);box-shadow:0 0 8px var(--accent)}
+#tip .ti{width:40px;height:40px;display:grid;place-items:center;border:1px solid rgba(255,255,255,.14);background:radial-gradient(circle,rgba(189,182,255,.18),transparent 70%);color:#fff}
+#tip .ti svg,.term .tic svg{fill:none;stroke:currentColor;stroke-width:1.2;stroke-linecap:round;stroke-linejoin:round}
+#tip .ti svg{width:22px;height:22px;filter:drop-shadow(0 0 3px rgba(189,182,255,.8))}
+#tip .th{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+#tip .th b{font-family:var(--serif);font-weight:500;font-size:.95rem;color:#fff;letter-spacing:.04em}
+#tip .th small{font-family:var(--mono);font-size:.56rem;letter-spacing:.18em;color:var(--dim)}
+#tip p{margin:5px 0 0;font-size:.8rem;line-height:1.6;color:var(--soft);word-break:keep-all}
+#tip .go{margin-top:8px;font-family:var(--mono);font-size:.6rem;letter-spacing:.18em;color:var(--accent);background:none;border:0;padding:0;cursor:pointer}
+#tip .go:hover{color:#fff}
+.term .w{display:flex;align-items:flex-start;gap:10px}
+.term .tic{flex:0 0 auto;width:26px;height:26px;display:grid;place-items:center;margin-top:1px;border:1px solid var(--line);color:var(--soft);transition:color .3s,border-color .3s}
+.term .tic svg{width:15px;height:15px}
+.term:hover .tic{color:#fff;border-color:var(--accent)}
+.term{grid-template-columns:150px 1fr}
 </style>
 </head>
 <body>
@@ -2325,6 +2344,82 @@ $("#replay").onclick=()=>{location.hash=""; location.reload()};
   vol.addEventListener("input",()=>{if(ready)p.setVolume(+vol.value)});
   const mb=document.getElementById("bgmpMin");mb.onclick=()=>{const m=box.classList.toggle("min");mb.innerHTML=m?'<svg viewBox="0 0 10 10"><path d="M6 2L3 5L6 8"/></svg>':'<svg viewBox="0 0 10 10"><path d="M2 5H8"/></svg>';mb.setAttribute("aria-label",m?"펼치기":"접기")};
   ui();
+})();
+</script>
+<script>
+/* 용어 툴팁 + 아이콘 */
+(()=>{
+const P=s=>`<svg viewBox="0 0 24 24" aria-hidden="true">${s}</svg>`;
+const ST=(x,y,r=1)=>`<path d="M${x} ${y-2.6*r}l${.7*r} ${1.9*r} ${1.9*r} ${.7*r}-${1.9*r} ${.7*r}-${.7*r} ${1.9*r}-${.7*r}-${1.9*r}-${1.9*r}-${.7*r} ${1.9*r}-${.7*r}z"/>`;
+const IC={
+ "성좌":P(`<path d="M4 18l5.5-6.5 5 3 3.5-6.5"/><circle cx="4" cy="18" r="1.2"/><circle cx="9.5" cy="11.5" r="1.2"/><circle cx="14.5" cy="14.5" r="1.2"/>`+ST(19,5)),
+ "화신":P(`<circle cx="12" cy="11" r="3"/><path d="M5.5 21.5c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5"/>`+ST(12,4,.8)),
+ "권능":P(`<circle cx="12" cy="12" r="2.6"/><path d="M12 2.5v4.5M12 17v4.5M2.5 12H7M17 12h4.5M5.3 5.3l3 3M15.7 15.7l3 3M18.7 5.3l-3 3M8.3 15.7l-3 3"/>`),
+ "성흔":P(`<path d="M12 3.5l1.9 6.6 6.6 1.9-6.6 1.9-1.9 6.6-1.9-6.6L3.5 12l6.6-1.9z"/><circle cx="12" cy="12" r="1"/>`),
+ "공명":P(`<circle cx="12" cy="12" r="2"/><path d="M8 8a5.7 5.7 0 000 8M16 8a5.7 5.7 0 010 8M5 5a10 10 0 000 14M19 5a10 10 0 010 14"/>`),
+ "별의 기록":P(`<path d="M3 5.5c3-1 6-1 9 1 3-2 6-2 9-1v13c-3-1-6-1-9 1-3-2-6-2-9-1z"/><path d="M12 6.5v13"/>`+ST(7.5,11,.6)+ST(16.5,11,.6)),
+ "성역":P(`<path d="M6 21V10a6 6 0 0112 0v11"/><path d="M3 21h18"/>`+ST(12,13,.9)),
+ "심도":P(`<path d="M3 5h18M5.5 10h13M8 15h8M10.5 20h3"/>`),
+ "정착화":P(`<circle cx="12" cy="4.8" r="2"/><path d="M12 6.8V21M5 14a7 7 0 0014 0M9 10.5h6"/>`),
+ "세계의 초안":P(`<rect x="3.5" y="4.5" width="12" height="15" stroke-dasharray="2 2"/><path d="M13.5 17l6.8-6.8 1.6 1.6-6.8 6.8-2.3.7z"/>`),
+ "현신":P(ST(12,4.5,.9)+`<path d="M12 9v3.5M10.2 11l1.8 1.8 1.8-1.8"/><circle cx="12" cy="15.5" r="1.7"/><path d="M8 22c.5-2.4 2-3.6 4-3.6s3.5 1.2 4 3.6"/>`),
+ "싱크":P(`<circle cx="9" cy="12" r="5.5"/><circle cx="15" cy="12" r="5.5"/>`),
+ "결절지":P(`<circle cx="12" cy="12" r="8.5" stroke-dasharray="2.4 2"/><circle cx="12" cy="12" r="2.8"/><path d="M12 3.5v5.7M12 14.8v5.7M3.5 12h5.7M14.8 12h5.7"/>`),
+ "천문원":P(`<path d="M4 20v-7a8 8 0 0116 0v7z"/><path d="M2.5 20h19M10.8 5.2l3.4 7.6"/>`),
+ "낙성채성":P(`<path d="M2.5 2.5l6 6"/><circle cx="9.2" cy="9.2" r="1.1"/><rect x="11" y="10" width="6" height="11"/><path d="M17 14h4v7h-4M13 13h2M13 16h2M13 19h2"/>`),
+ "천쇄회":P(`<rect x="2.5" y="8.5" width="10.5" height="7" rx="3.5"/><rect x="11" y="8.5" width="10.5" height="7" rx="3.5"/>`),
+ "성해문":P(`<path d="M3 5.5h18M5 9h14M7 5.5V21M17 5.5V21"/>`+ST(12,14.5,.9)),
+ "이리키인 가문":P(`<circle cx="12" cy="12" r="9"/><path d="M12 5l5 7-5 7-5-7z"/><circle cx="12" cy="12" r="1.3"/>`),
+ "대관측":P(`<path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>`),
+ "D-0":P(`<path d="M7 3h10v3.5L12 12 7 6.5zM7 21h10v-3.5L12 12l-5 5.5z"/>`),
+};
+const T={}; TERMS.forEach(t=>T[t[0]]={k:t[0],en:t[1],d:t[2],go:t[3]});
+const keys=Object.keys(T).sort((a,b)=>b.length-a.length);
+const re=new RegExp(keys.map(k=>k.replace(/[.*+?^${}()|[\]\\-]/g,"\\$&")).join("|"),"g");
+const SKIP="script,style,svg,button,a,input,textarea,label,h1,h2,h3,.phead,.title-en,.syn-tag,.eyebrow,.terms,.tip-term,#tip,.zgroup,nav,header,footer,.menu,.side";
+function wrap(root){
+  const seen=new Set([...root.querySelectorAll(".tip-term")].map(e=>e.dataset.term));
+  const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode:n=>{const p=n.parentElement;return(!n.nodeValue.trim()||!p||p.closest(SKIP))?2:1}});
+  const list=[];while(w.nextNode())list.push(w.currentNode);
+  for(const n of list){const s=n.nodeValue;let m,last=0,f=null;re.lastIndex=0;
+    while((m=re.exec(s))){if(seen.has(m[0]))continue;seen.add(m[0]);f=f||document.createDocumentFragment();
+      f.append(s.slice(last,m.index));const sp=document.createElement("span");sp.className="tip-term";sp.dataset.term=m[0];sp.tabIndex=0;sp.textContent=m[0];f.append(sp);last=m.index+m[0].length}
+    if(f){f.append(s.slice(last));n.replaceWith(f)}}
+}
+$$("main .page").forEach(pg=>{if(pg.id!=="glossary")wrap(pg)});
+// 기존 키워드 버튼(누르면 이동)에도 마우스를 올리면 설명이 뜨게
+$$(".kwl").forEach(b=>{const k=b.textContent.replace(/\(.*|\s*란\?.*|→/g,"").trim();if(T[k])b.dataset.term=k});
+const mb=$("#mbd");if(mb){let busy=false;new MutationObserver(()=>{if(busy)return;busy=true;wrap(mb);busy=false}).observe(mb,{childList:true,subtree:true})}
+
+const tip=document.createElement("div");tip.id="tip";tip.setAttribute("role","tooltip");document.body.append(tip);
+let cur=null,ht=0;
+function open(el){
+  const t=T[el.dataset.term];if(!t)return;clearTimeout(ht);
+  if(cur&&cur!==el)cur.classList.remove("on");cur=el;el.classList.add("on");
+  tip.innerHTML=`<div class="ti">${IC[t.k]||""}</div><div><div class="th"><b>${esc(t.k)}</b><small>${esc(t.en)}</small></div><p>${esc(t.d)}</p>${el.classList.contains("kwl")?"":`<button class="go" data-go="${t.go}">자세히 보기 →</button>`}</div>`;
+  const r=el.getBoundingClientRect(),tw=tip.offsetWidth,th=tip.offsetHeight,vw=innerWidth,vh=innerHeight;
+  let x=Math.min(Math.max(12,r.left+r.width/2-tw/2),vw-tw-12),y=r.bottom+10;
+  if(y+th>vh-12&&r.top-th-10>12)y=r.top-th-10;
+  tip.style.transform="";tip.style.left=x+"px";tip.style.top=y+"px";tip.classList.add("on");
+}
+function close(){if(cur)cur.classList.remove("on");cur=null;tip.classList.remove("on")}
+const later=()=>{clearTimeout(ht);ht=setTimeout(close,160)};
+document.addEventListener("pointerover",e=>{if(e.pointerType!=="mouse")return;const el=e.target.closest("[data-term]");if(el)open(el);else if(e.target.closest("#tip"))clearTimeout(ht)});
+document.addEventListener("pointerout",e=>{if(e.pointerType!=="mouse")return;if(e.target.closest("[data-term],#tip"))later()});
+document.addEventListener("click",e=>{
+  const el=e.target.closest(".tip-term");
+  if(el){e.preventDefault();cur===el&&tip.classList.contains("on")?close():open(el);return}
+  if(e.target.closest("#tip .go")){close();return}
+  if(!e.target.closest("#tip"))close();
+});
+document.addEventListener("focusin",e=>{const el=e.target.closest&&e.target.closest(".tip-term");if(el&&el.matches(":focus-visible"))open(el)});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")close()});
+addEventListener("scroll",close,{passive:true,capture:true});addEventListener("resize",close);
+addEventListener("hashchange",close);
+
+// 용어 사전에도 아이콘
+const deco=()=>$$("#terms .term").forEach(b=>{const w=b.querySelector(".w");if(w.querySelector(".tic"))return;const k=w.firstChild.textContent.trim();if(IC[k])w.innerHTML=`<i class="tic">${IC[k]}</i><span>${w.innerHTML}</span>`});
+deco();$("#q").addEventListener("input",deco);
 })();
 </script>
 </body>
